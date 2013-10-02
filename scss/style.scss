@@ -1,0 +1,21 @@
+@import "global/template_header.scss";
+
+/* Vendor Dependencies */
+@import "compass";
+
+/* Authored Dependencies */
+@import "global/preprocess.scss";   //= Colours, Variables, Mixins and Functions.
+@import "vendor/wp_styles.scss";    //= WordPress basic styles (includes reset).
+@import "global/typography.scss";   //= Um... typography stuff.
+
+/* Modules */
+@import "global/base.scss";     //= Base HTML element styling and global classes (not modules).
+@import "global/modules.scss";  //= Basic module styling (if you need to adjust - it should be over-ridden in a partial).
+
+/* Partials */
+@import "partials/header.scss";     //= Elements found in the header.
+@import "partials/main.scss";       //= Elements found in the main body.
+@import "partials/sidebar.scss";    //= Elements found in the sidebar.
+@import "partials/footer.scss";     //= Elements found in the footer.
+
+@import "global/print.scss";    //= Default print styles.
