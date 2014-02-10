@@ -1,0 +1,36 @@
+{
+  "name": "wp-boilerplate",
+  "author": "Helios Design Labs",
+  "description": "A quick starting point for WordPress themes built from scratch.",
+  "contributors": [
+    {
+      "name": "Daniel Sundy",
+      "email": "dan@heliozilla.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heliosdesign/helios-wp-boilerplate"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "~3.5.2",
+    "gulp-rename": "~1.0.0",
+    "tiny-lr": "0.0.5",
+    "gulp-concat": "~2.1.7",
+    "gulp-livereload": "~1.0.1",
+    "gulp-ruby-sass": "~0.3.0",
+    "gulp-uglify": "~0.2.0",
+    "gulp-clean": "~0.2.4",
+    "gulp-minify-css": "~0.3.0",
+    "gulp-notify": "~0.4.1",
+    "gulp-jshint": "~1.4.0",
+    "gulp-autoprefixer": "0.0.6",
+    "gulp-cache": "~0.1.1",
+    "gulp-imagemin": "~0.1.5",
+    "compass": "~0.1.0",
+    "gulp-compass": "~1.1.2",
+    "gulp-util": "~2.2.14",
+    "gulp-run-sequence": "~0.3.2"
+  }
+}

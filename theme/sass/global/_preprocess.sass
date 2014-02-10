@@ -1,0 +1,31 @@
+// Colours 
+
+// Variables 
+
+// Mixins 
+
+// Media Query Naming
+
+@mixin breakpoint($point)
+    // < 550px or 35em.
+    @if $point == small
+        @media (max-width: 550px) 
+            @content
+  
+    // > 550px or 35em.
+    @if $point == medium
+        @media (min-width: 550px) 
+            @content
+  
+    // > 850px or 53.123em.
+    @if $point == large
+        @media (min-width: 850px) 
+            @content
+  
+    // > 1000px or 64em.
+    @if $point == full
+        @media (min-width: 1000px) 
+            @content
+  
+
+// Functions 
