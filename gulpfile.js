@@ -26,12 +26,8 @@ gulp.task('styles', function() {
         //.pipe(rename({suffix: '.min'}))
         .pipe(minifycss())
         .pipe(gulp.dest('./'))
+        .pipe(livereload(server))
         .pipe(notify({ message: 'Styles task complete' }));
-});
-
-gulp.task('main-style', function(){
-    gulp.src('style.css')
-        .pipe(livereload(server));
 });
 
 gulp.task('scripts', function() {
@@ -73,6 +69,5 @@ gulp.task('watch', function() {
         gulp.watch('src/sass/**/*.sass', ['styles']);
         gulp.watch('src/js/*.js', ['scripts']);
         gulp.watch('src/assets/img/**/*', ['images']);
-        gulp.watch('style.css', ['main-style']);
     });    
 });
