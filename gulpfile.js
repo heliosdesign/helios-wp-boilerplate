@@ -15,12 +15,11 @@ var gulp            = require('gulp'),
     cache           = require('gulp-cache'),
     livereload      = require('gulp-livereload'),
     lr              = require('tiny-lr'),
-    server          = lr(),
-    info            = require('./config.json');
+    server          = lr();
 
 
 gulp.task('styles', function() {
-    return gulp.src('_src/sass/style.sass')
+    return gulp.src('src/sass/style.sass')
         .pipe(sass({ style: 'expanded', compass: true }))
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         //.pipe(gulp.dest('../dist/'))
@@ -36,7 +35,7 @@ gulp.task('main-style', function(){
 });
 
 gulp.task('scripts', function() {
-    return gulp.src('_src/js/*.js')
+    return gulp.src('src/js/*.js')
         .pipe(jshint('.jshintrc'))
         .pipe(jshint.reporter('default'))
         .pipe(concat('main.js'))
@@ -49,7 +48,7 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('images', function() {
-  return gulp.src('_src/assets/img/**/*')
+  return gulp.src('src/assets/img/**/*')
     .pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
     .pipe(gulp.dest('./assets/img'))
     .pipe(livereload(server))
@@ -71,9 +70,9 @@ gulp.task('watch', function() {
             return console.log(err)
         }
 
-        gulp.watch('_src/sass/**/*.sass', ['styles']);
-        gulp.watch('_src/js/*.js', ['scripts']);
-        gulp.watch('_src/assets/img/**/*', ['images']);
+        gulp.watch('src/sass/**/*.sass', ['styles']);
+        gulp.watch('src/js/*.js', ['scripts']);
+        gulp.watch('src/assets/img/**/*', ['images']);
         gulp.watch('style.css', ['main-style']);
     });    
 });
