@@ -31,6 +31,7 @@
     "compass": "~0.1.0",
     "gulp-compass": "~1.1.2",
     "gulp-util": "~2.2.14",
-    "gulp-run-sequence": "~0.3.2"
+    "gulp-run-sequence": "~0.3.2",
+    "gulp-svgmin": "~0.4.5"
   }
 }

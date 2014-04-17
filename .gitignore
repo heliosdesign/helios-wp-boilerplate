@@ -5,3 +5,4 @@ _source
 _archive
 
 node_modules/
+dist/
