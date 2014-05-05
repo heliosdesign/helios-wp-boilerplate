@@ -34,6 +34,7 @@ var dist = {
 gulp.task('styles', function() {
     return gulp.src(src.styles + '/style.sass')
         .pipe(sass({ style: 'expanded', compass: true }))
+        .on('error', function(e){ gutil.log(e.message) })
         //.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(gulp.dest(src.base))
         //.pipe(rename({suffix: '.min'}))
@@ -59,6 +60,7 @@ gulp.task('scripts', function() {
 var buildStyles = function() {
     return gulp.src(src.styles + '/style.sass')
         .pipe(sass({ style: 'compressed', compass: true }))
+        .on('error', function(e){ gutil.log(e.message) })
         //.pipe(minifycss())
         .pipe(gulp.dest(dist.base))
         .pipe(notify({ message: 'Styles built.' }));
