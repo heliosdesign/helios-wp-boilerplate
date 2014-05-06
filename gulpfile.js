@@ -10,6 +10,7 @@ var gulp            = require('gulp'),
     imagemin        = require('gulp-imagemin'),
     svgmin          = require('gulp-svgmin'),
     rename          = require('gulp-rename'),
+    replace         = require('gulp-replace'),
     clean           = require('gulp-clean'),
     concat          = require('gulp-concat'),
     notify          = require('gulp-notify'),
@@ -101,7 +102,9 @@ var moveFiles = function() {
 }
 
 gulp.task('clean', function() {
-    return gulp.src([dist.base], {read: false})
+    // delete the *contents* of dist, not the dir itself.
+    // this way we can deploy using git hooks
+    return gulp.src([ dist.base + '/**/*' ], {read: false})
         .pipe(clean());
 });
 
