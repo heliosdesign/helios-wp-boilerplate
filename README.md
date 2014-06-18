@@ -47,4 +47,3 @@ Builds all the images, scripts and styles from the `src` folder into the proper 
 
 * `gulp styles`: Updates and compiles SASS.
 * `gulp scripts`: Concatenates, minifies and compiles the JavaScript.
-* `gulp images`: Crushes and moves images. 
