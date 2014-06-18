@@ -39,7 +39,7 @@ Watches for changes in the `src` folder and runs the appropriate tasks and live 
 
 ### Build
 
-Builds all the images, scripts and styles from the `src` folder into the proper spots in the root folder.
+Builds all the images, scripts and styles from the `src` folder and publishes a deploy-ready `dist` directory.
 
 	gulp build
 
