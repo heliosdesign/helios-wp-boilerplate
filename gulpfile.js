@@ -1,128 +1,144 @@
-var gulp            = require('gulp'),
-    // gutil           = require('gulp-util'),
-    //sequence        = require('gulp-run-sequence')
-    compass         = require('gulp-compass'),
-    sass            = require('gulp-ruby-sass'),
-    //autoprefixer    = require('gulp-autoprefixer'),
-    minifycss       = require('gulp-minify-css'),
-    jshint          = require('gulp-jshint'),
-    uglify          = require('gulp-uglify'),
-    imagemin        = require('gulp-imagemin'),
-    svgmin          = require('gulp-svgmin'),
-    rename          = require('gulp-rename'),
-    replace         = require('gulp-replace'),
-    clean           = require('gulp-clean'),
-    concat          = require('gulp-concat'),
-    notify          = require('gulp-notify'),
-    //cache           = require('gulp-cache'),
-    livereload      = require('gulp-livereload'),
-    lr              = require('tiny-lr'),
-    server          = lr();
+var data         = require('./package.json');
 
-var src = {
+var gulp         = require('gulp'),
+    gulputil     = require('gulp-util'),
+    autoprefixer = require('gulp-autoprefixer'),
+    clean        = require('gulp-clean'),
+    concat       = require('gulp-concat'),
+    imagemin     = require('gulp-imagemin'),
+    jshint       = require('gulp-jshint'),
+    livereload   = require('gulp-livereload'),
+    rename       = require('gulp-rename'),
+    replace      = require('gulp-replace'),
+    sass         = require('gulp-ruby-sass'),
+    svgmin       = require('gulp-svgmin'),
+    uglify       = require('gulp-uglify'),
+    watch        = require('gulp-watch');
+
+var path = {
+  src: {
     base: './src',
     styles: './src/sass',
     scripts: './src/js',
     assets: './src/assets'
-}
-var dist = {
+  },
+  dist: {
     base: './dist',
-    styles: './dist/css',
     scripts: './dist/js',
     assets: './dist/assets'
+  }
 }
 
+/** 
+ * Functions 
+ */
+var styles = function(env) {
+  var source = path.src.styles + '/style.sass';
+  var output = env === 'src' ? 'expanded' : 'compressed';
+
+  gulp.src([
+      path.src.styles + '/*.sass',
+      '!' + path.src.styles + '/style.sass'
+    ])
+    .pipe(sass({ style: output, compass: true }))
+    .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+    .pipe(gulp.dest(path[env].base + '/css'));
+
+  return gulp.src(source)
+    .pipe(sass({ style: output, compass: true }))
+    .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+    .pipe(replace('{{themeURI}}', data.homepage))
+    .pipe(replace('{{author}}', data.author.name))
+    .pipe(replace('{{authorURI}}', data.author.url))
+    .pipe(replace('{{description}}', data.description))
+    .pipe(replace('{{version}}', data.version))
+    .pipe(replace('{{textDomain}}', function(){ 
+      var slg = data.config.slug || data.name;
+      return slg;
+    }))
+    .pipe(replace('{{themeName}}', function() {
+      var string = data.config.title;
+      if (env === 'src') {
+        string += ' (Development)';
+      }
+      return string;
+    }))
+    .pipe(gulp.dest(path[env].base))
+    .pipe(livereload({auto: false}));
+}
+
+var scripts = function(env) {
+  var enqPath = '/inc/functions';
+
+  if (env === 'dist') {
+    gulp.src(path.src.base + enqPath + '/enqueue-functions.php')
+      .pipe(replace('/js/lib/main.dev.js', '/js/lib/main.min.js'))
+      .pipe(gulp.dest(path.dist.base + enqPath))
+  }
+
+  return gulp.src([
+      path.src.scripts + '/*.js',
+      '!' + path.src.scripts + '/*.dev.js',
+      '!' + path.src.scripts + '/lib/*'
+    ])
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'))
+    .pipe(concat('main.js'))
+    .pipe(rename({suffix: '.dev'}))
+    .pipe(gulp.dest(path.src.scripts))
+    .pipe(uglify())
+    .pipe(gulp.dest(path.dist.scripts))
+    .pipe(livereload({auto: false}));
+}
+
+var assets = function(type) {
+  var source = path.src.assets + '/' + type + '/**/*';
+  var compress;
+  if (type === 'img') {
+    var compress = imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })
+  } else {
+    var compress = svgmin();
+  }
+  return gulp.src(source)
+    .pipe(compress)
+    .pipe(gulp.dest(path.dist.assets + '/' + type))
+}
+
+var move = function() {
+  return gulp.src([
+    path.src.base + '/**/*.php',
+    path.src.base + '/*.png',
+    path.src.scripts + '/lib/*.js'
+  ], {base: path.src.base})
+    .pipe(gulp.dest(path.dist.base))
+}
+
+/**
+ * Tasks
+ */
 gulp.task('styles', function() {
-    return gulp.src(src.styles + '/style.sass')
-        .pipe(sass({ style: 'expanded', compass: true }))
-        .on('error', function(e){ gutil.log(e.message) })
-        //.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-        .pipe(gulp.dest(src.base))
-        //.pipe(rename({suffix: '.min'}))
-        //.pipe(minifycss())
-        .pipe(livereload(server))
-        //.pipe(gulp.dest(dist.base))
-        .pipe(notify({ message: 'Styles task complete.' }));
+  styles('src');
 });
 
 gulp.task('scripts', function() {
-    return gulp.src(src.scripts + '/*.js')
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'))
-        //.pipe(concat('main.js'))
-        //.pipe(gulp.dest(src.scripts))
-        //.pipe(rename({suffix: '.min'}))
-        // .pipe(uglify())
-        .pipe(gulp.dest(src.scripts))
-        .pipe(livereload(server))
-        .pipe(notify({ message: 'Scripts task complete.' }));
+  scripts('src');
 });
 
-var buildStyles = function() {
-    return gulp.src(src.styles + '/style.sass')
-        .pipe(sass({ style: 'compressed', compass: true }))
-        .on('error', function(e){ gutil.log(e.message) })
-        //.pipe(minifycss())
-        .pipe(gulp.dest(dist.base))
-        .pipe(notify({ message: 'Styles built.' }));
-}
-
-var buildScripts = function() {
-    return gulp.src(src.scripts + '/*.js')
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'))
-        .pipe(concat('main.js'))
-        .pipe(rename({suffix: '.min'}))
-        .pipe(uglify())
-        .pipe(gulp.dest(dist.scripts))
-        .pipe(notify({ message: 'Scripts built.' }));
-}
-
-var buildImg = function() {
-    return gulp.src(src.assets + '/img/**/*')
-        .pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
-        .pipe(gulp.dest(dist.assets + '/img'))
-        //.pipe(livereload(server))
-        .pipe(notify({ message: 'Images compressed and moved.' }));
-};
-
-var buildSVG = function() {
-    return gulp.src(src.assets + '/svg/**/*')
-        .pipe(gulp.dest(dist.assets + '/svg'))
-        .pipe(svgmin())
-        .pipe(notify({ message: 'SVGs compressed and moved.' }));
-}
-
-var moveFiles = function() {
-    gulp.src([
-        src.base + '/**/*.php',
-        src.base + '/fonts/*'
-    ], {base: src.base})
-        .pipe(gulp.dest(dist.base))
-}
-
-gulp.task('clean', function() {
-    // delete the *contents* of dist, not the dir itself.
-    // this way we can deploy using git hooks
-    return gulp.src([ dist.base + '/**/*' ], {read: false})
-        .pipe(clean());
+gulp.task('clean', function(){
+  return gulp.src([path.dist.base + '/*'], {read: false})
+    .pipe(clean())
 });
 
-gulp.task('build', ['clean'], function() {
-    buildStyles();
-    buildScripts();
-    buildImg();
-    moveFiles();
+gulp.task('build', ['clean'], function(){
+  styles('dist');
+  scripts('dist');
+  assets('img');
+  assets('svg');
+  move();
 });
 
-gulp.task('watch', function() {
-    server.listen(35729, function(err){
-        if(err) {
-            return console.log(err)
-        }
-
-        gulp.watch(src.styles + '/**/*.sass', ['styles']);
-        //gulp.watch(src.scripts + '/*.js', ['scripts']);
-        gulp.watch(src.assets + '/img/**/*', ['images']);
-    });    
+gulp.task('watch', function(){
+  livereload.listen();
+  gulp.watch(path.src.styles + '/**/*.sass', ['styles']);
+  gulp.watch(path.src.scripts + '/*.js', ['scripts']);
 });

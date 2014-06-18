@@ -5,4 +5,12 @@ _source
 _archive
 
 node_modules/
+
+
+# The following will get generated when styles, scripts
+# or watch tasks are run.
+
 dist/
+src/css/
+main.dev.js
+style.css
