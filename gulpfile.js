@@ -72,7 +72,7 @@ var scripts = function(env) {
 
   if (env === 'dist') {
     gulp.src(path.src.base + enqPath + '/enqueue-functions.php')
-      .pipe(replace('/js/lib/main.dev.js', '/js/lib/main.min.js'))
+      .pipe(replace('/js/main.dev.js', '/js/main.min.js'))
       .pipe(gulp.dest(path.dist.base + enqPath))
   }
 
@@ -87,6 +87,7 @@ var scripts = function(env) {
     .pipe(rename({suffix: '.dev'}))
     .pipe(gulp.dest(path.src.scripts))
     .pipe(uglify())
+    .pipe(rename({basename:'main.min'}))
     .pipe(gulp.dest(path.dist.scripts))
     .pipe(livereload({auto: false}));
 }
@@ -108,7 +109,8 @@ var move = function() {
   return gulp.src([
     path.src.base + '/**/*.php',
     path.src.base + '/*.png',
-    path.src.scripts + '/lib/*.js'
+    path.src.scripts + '/lib/*.js',
+    '!' + path.src.base + '/inc/functions/enqueue-functions.php'
   ], {base: path.src.base})
     .pipe(gulp.dest(path.dist.base))
 }
