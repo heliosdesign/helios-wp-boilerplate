@@ -46,7 +46,7 @@ var checkCWD = function() {
 // SASS compiling task.
 gulp.task('sass', function() {
   checkCWD();
-  return gulp.src([src.sass + '**/*.scss'])
+  return gulp.src([src.sass + '**/*.sass'])
     .pipe(plugins.sass())
     .on('error', swallowError)
     .pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
@@ -94,8 +94,7 @@ gulp.task('watch', function() {
   plugins.livereload.listen();
 
   // watch just the CSS so livereload doesn’t reload the entire page
-  gulp.watch([src.sass + '**/*.scss', '!' + src.sass + 'admin/**/*.scss'], ['sass']);
-  gulp.watch(src.sass + 'admin/**/*.scss', ['admin-styles']);
+  gulp.watch([src.sass + '**/*.sass'], ['sass']);
   gulp.watch(src.base + '**/*.css', plugins.livereload.changed);
 
   gulp.watch(src.js + '**/*.js', ['jshint']).on('change', plugins.livereload.changed);
