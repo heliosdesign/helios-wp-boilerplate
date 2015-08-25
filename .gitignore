@@ -27,7 +27,7 @@ wp-content/*/*/
 
 # Exceptions from the rules above
 !.gitignore
-!gulpfile
+!gulpfile.js
 !package.json
 !README.md
 !wp-content/themes/base-theme/
