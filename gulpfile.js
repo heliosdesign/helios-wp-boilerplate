@@ -61,7 +61,6 @@ gulp.task('sass', function() {
 gulp.task('cssmin', function () {
   return gulp.src([src.base + 'style.css'])
     .pipe(plugins.cssmin())
-    // .pipe(plugins.concat('application.min.css'))
     .pipe(gulp.dest(dist.base));
 });
 
