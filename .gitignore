@@ -31,6 +31,8 @@ wp-content/*/*/
 !package.json
 !README.md
 !wp-content/db.php
+!wp-content/themes/index.php
 !wp-content/themes/base-theme/
 !wp-content/themes/child-theme/
+!wp-content/plugins/index.php
 !wp-content/plugins/base-plugin/
