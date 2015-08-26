@@ -24,7 +24,7 @@ There are some more things you may want to tweak/configure/delete.
 
 ### Template Information
 
-Make sure to update the meta data that gets placed at the top of `style.css`. This can be found in `src/sass/global/_template-header.sass` in the base-theme or child-theme.
+Make sure to update the meta data that gets placed at the top of `style.css`. This can be found in `src/sass/global/_template-header.sass` in the base theme or child theme.
 
 ### Child Themes
 
@@ -34,6 +34,28 @@ This project has an example child theme included. If you do not want to use a ch
 
 It has become more common (and percieved as best practice) to pull site functionality out of themes and into plugins. As such, there is a base-plugin template included in this repository.
 
+Within that plugin is a set of classes to make adding settings panels, custom post types and meta boxes much easier.
+
 ## Gulp Tasks
 
+Everything is done with gulp. Here is a list of useful tasks:
+
+	$ gulp
+	
+Compiles the sass, runs a jshint on the javascript files and watches for changes &mdash; all in the `base-theme` directory.
+
+	$ gulp child
+	
+Does the same thing as `gulp` but instead, does it in the `child-theme` directory.
+
+	$ gulp build
+	
+Gets the `base-theme` ready for deployment. It runs and compiles the sass into minified css, and uglifies all the JS files.
+
+	$ gulp build:child
+	
+Same as `gulp build` except that it does it in the `child-theme` directory.
+
 ## Deployment
+
+This setup gives us flexibility in how to deploy the project. Separate deploy hooks can be used to deploy each theme and custom plugin. Or you could deploy the whole wp-content directory and just get fancy with the `.gitignore` file.
