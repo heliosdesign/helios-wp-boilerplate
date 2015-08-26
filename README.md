@@ -20,31 +20,20 @@ We're using an extra bit of trickery to load in asset files depending on the env
 
 ## Before You Begin
 
-## Usage Notes
+There are some more things you may want to tweak/configure/delete.
 
-Create a new WordPress build and navigate to the themes directory (`project-root/wp-content/themes`).
+### Template Information
 
-All the styles, scripts and assets should be manipulated in the `src` folder. They will get compiled via Gulp to their final locations.
+Make sure to update the meta data that gets placed at the top of `style.css`. This can be found in `src/sass/global/_template-header.sass` in the base-theme or child-theme.
 
-Make sure you update the theme meta data that gets placed at the top of `style.css`. It can be found in `src/sass/global/_template_header.sass`.
+### Child Themes
 
+This project has an example child theme included. If you do not want to use a child theme, just delete the whole folder. If you are planning to use it, have a look in the `src/sass/styles.sass` file to see how the style system works. Similarly, there are instructions in the `functions.php` file. See the **Gulp Tasks** section for information on how to run tasks for a child theme as opposed to the base theme.
+
+### Project Plugin
+
+It has become more common (and percieved as best practice) to pull site functionality out of themes and into plugins. As such, there is a base-plugin template included in this repository.
 
 ## Gulp Tasks
 
-### Watch
-
-Watches for changes in the `src` folder and runs the appropriate tasks and live reloads the browser.
-
-	gulp watch
-	
-
-### Build
-
-Builds all the images, scripts and styles from the `src` folder and publishes a deploy-ready `dist` directory.
-
-	gulp build
-
-## More Gulp Commands
-
-* `gulp styles`: Updates and compiles SASS.
-* `gulp scripts`: Concatenates, minifies and compiles the JavaScript.
+## Deployment
