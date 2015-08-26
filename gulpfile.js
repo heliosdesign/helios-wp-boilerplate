@@ -11,13 +11,18 @@ var src = {
   base: './',
   css: './css',
   sass: './src/sass/',
-  js: './src/js/'
+  js: './src/js/',
+  img: './src/assets/img/',
+  svg: './src/assets/svg/',
+  sprite: './src/assets/svgsprites'
 };
 
 var dist = {
   base: './',
-  css: './css',
-  js: './js/'
+  css: './css/',
+  js: './js/',
+  img: './assets/img/',
+  svg: './assets/svg/'
 };
 
 /**
@@ -69,11 +74,10 @@ gulp.task('jshint', function () {
     .pipe(plugins.jshint.reporter('fail'));
 });
 
-// JS minifying task
+// JS minifying task.
 gulp.task('uglify', function () {
   return gulp.src([
       src.js + 'lib/**/.js',
-      src.js + 'utilities.js',
       src.js + '**/*.js',
       '!' + src.js + 'noconcat/**/*.js'
     ])
@@ -86,6 +90,20 @@ gulp.task('noconcat', function () {
   return gulp.src(src.js + 'noconcat/**/*.js')
     .pipe(plugins.uglify())
     .pipe(gulp.dest(dist.js));
+});
+
+// Image minifying task.
+gulp.task('imagemin', function() {
+  return gulp.src(src.img + '**/*.{png,gif,jpg}')
+    .pipe(plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
+    .pipe(gulp.dest(dist.img));
+});
+
+// SVG minifying task.
+gulp.task('svgmin', function() {
+  return gulp.src(src.svg + '**/*.svg')
+    .pipe(plugins.svgmin())
+    .pipe(gulp.dest(dist.svg));
 });
 
 gulp.task('watch', function() {
@@ -101,21 +119,20 @@ gulp.task('watch', function() {
 
 gulp.task('default', function(done) {
   process.chdir(cwd);
-  runSequence('sass', 'jshint', 'watch', done);
+  runSequence('sass', ['imagemin', 'svgmin'], 'jshint', 'watch', done);
 });
-
 
 gulp.task('child', function(done) {
   process.chdir(cwdChild);
-  runSequence('sass', 'jshint', 'watch', done);
+  runSequence('sass', ['imagemin', 'svgmin'], 'jshint', 'watch', done);
 });
 
 gulp.task('build', function(done) {
   process.chdir(cwd);
-  runSequence('sass', 'cssmin', 'jshint', ['uglify', 'noconcat'], done);
+  runSequence('sass', ['cssmin', 'imagemin', 'svgmin'], 'jshint', ['uglify', 'noconcat'], done);
 });
 
 gulp.task('build:child', function(done) {
-  process.chdir(child);
-  runSequence('sass', 'cssmin', 'jshint', done);
+  process.chdir(cwdChild);
+  runSequence('sass', ['cssmin', 'imagemin', 'svgmin'], 'jshint', ['uglify', 'noconcat'], done);
 });

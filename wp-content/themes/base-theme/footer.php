@@ -6,7 +6,7 @@
 <?php wp_footer(); ?>
 
 <?php
-  if ( DEV_ENV == true ) {
+  if ( DEV_ENV === true ) {
     $db_info = array(
       'seconds' => timer_stop( 0 ),
       'queries' => $wpdb->num_queries
