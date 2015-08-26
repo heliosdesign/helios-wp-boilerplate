@@ -16,6 +16,12 @@
 if ( ! function_exists( 'helios_setup' ) ):
   
   function helios_setup() {
+
+    /**
+     * Add default posts and comments RSS feed links to head
+     */
+    add_theme_support( 'automatic-feed-links' );
+
     /**
      * Enable support for Post Thumbnails
      */
@@ -25,8 +31,13 @@ if ( ! function_exists( 'helios_setup' ) ):
      * This theme uses wp_nav_menu() in one location.
      */
     register_nav_menus( array(
-      'primary' => __( 'Primary Menu', 'Helios' ),
+      'primary' => __( 'Primary Menu', 'helios' ),
     ) );
+
+    /**
+     * Add support for Post Formats
+     */
+    add_theme_support( 'post-formats', array( /*'aside', 'audio', 'image', 'link', 'quote', 'video'*/ ) );
   }
 
 endif;
