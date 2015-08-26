@@ -153,16 +153,16 @@ if ( ! function_exists( 'helios_categorized_blog' ) ) :
   }
 endif;
 
-if ( function_exists( 'helois_category_transient_flusher' ) ) :
+if ( ! function_exists( 'helios_category_transient_flusher' ) ) :
   /**
    * Flush out the transients used in helios_categorized_blog
    *
    * @since WPBoiler 1.0
    */
-  function helois_category_transient_flusher() {
+  function helios_category_transient_flusher() {
     // Like, beat it. Dig?
     delete_transient( 'all_the_cool_cats' );
   }
 endif;
-add_action( 'edit_category', 'helois_category_transient_flusher' );
-add_action( 'save_post', 'helois_category_transient_flusher' );
+add_action( 'edit_category', 'helios_category_transient_flusher' );
+add_action( 'save_post', 'helios_category_transient_flusher' );
