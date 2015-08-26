@@ -5,23 +5,23 @@
 
 get_header(); ?>
 
-    <?php if ( have_posts() ) : ?>
+  <?php if ( have_posts() ) : ?>
 
-        <?php helios_content_nav( 'nav-above' ); ?>
+    <?php helios_content_nav( 'nav-above' ); ?>
 
-        <?php while ( have_posts() ) : the_post(); ?>
+    <?php while ( have_posts() ) : the_post(); ?>
 
-            <?php get_template_part( 'content/content', get_post_format() ); ?>
+      <?php get_template_part( 'content/content', get_post_format() ); ?>
 
-        <?php endwhile; ?>
+    <?php endwhile; ?>
 
-        <?php helios_content_nav( 'nav-below' ); ?>
+    <?php helios_content_nav( 'nav-below' ); ?>
 
-    <?php else : ?>
+  <?php else : ?>
 
-        <?php get_template_part( 'content/no-results' ); ?>
+    <?php get_template_part( 'content/no-results' ); ?>
 
-    <?php endif; ?>
+  <?php endif; ?>
 
 <?php get_sidebar(); ?>
 <?php get_footer(); ?>

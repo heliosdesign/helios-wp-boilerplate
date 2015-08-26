@@ -2,7 +2,7 @@
 /**
  * The Sidebar containing the main widget areas.
  *
- * @package base-theme
+ * @package Helios WP Boilerplate
  */
 ?>
 <div id="secondary" class="sidebar widget-area" role="complementary">
