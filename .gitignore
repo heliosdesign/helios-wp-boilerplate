@@ -1,16 +1,36 @@
-.DS_Store
-.sass-cache
+# Ignore everything
 
-_source
-_archive
-
+*.DS_Store
+*.git
+*.gitmodules
 node_modules/
-
-
-# The following will get generated when styles, scripts
-# or watch tasks are run.
-
+error_log
+/*.*
+.sass-cache
+_source
+deploy/
 dist/
-src/css/
-main.dev.js
-style.css
+dev/
+tests/
+
+wp-admin/
+wp-includes/
+wp-content/*.*
+wp-content/*/*.*
+wp-content/*/*/
+# wp-content/uploads/
+# wp-content/themes/*.*
+# wp-content/themes/*/
+# wp-content/plugins/*.*
+# wp-content/plugins/*/
+
+
+# Exceptions from the rules above
+!.gitignore
+!gulpfile.js
+!package.json
+!README.md
+!wp-content/db.php
+!wp-content/themes/base-theme/
+!wp-content/themes/child-theme/
+!wp-content/plugins/base-plugin/

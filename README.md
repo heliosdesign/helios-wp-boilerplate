@@ -2,48 +2,68 @@
 
 A quick starting point for WordPress themes built from scratch.
 
+**Note:** This theme has been refactored to include the entire directory structure.
 
-## Usage Notes
 
-Create a new WordPress build and navigate to the themes directory (`project-root/wp-content/themes`).
+## Getting Started (Local)
 
-Clone the boilerplate:
+1. Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`
+2. Jump into the directory and delete the `.git` directory (unless you want to work on this boilerplate). You can now create a new repo if you want to.
+3. Download WordPress from [wordpress.org/download](https://wordpress.org/download).
+4. Add the WordPress files to the root of the directory. Some of the directory tree will already be there (`wp-content/plugins`, `wp-content/themes`) so just add the missing files to those directories instead of overwriting the whole thing.
+5. Run `$ npm install` to get the tooling dependencies.
+6. Create your database and run the install.
 
-	$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [new-theme-name]
-	
-Jump into the directory and delete the existing git info:
 
-	$ cd [new-theme-name]
-	
-	$ rm -rf .git
-	
-You can now create a new repo if you want.
+## Additional Configuration
 
-Run `npm install` to ensure you have the necessary node modules.
+We're using an extra bit of trickery to load in asset files depending on the environment. The enqueueing function (found in `base-theme/inc/functions/enqueue-functions.php`) looks to see if a `DEV_ENV` flag is set to `true`. If so, it spits out all the individual, non-minified  files defined in that block. As such, open the `/wp-config.php` file and add `define('DEV_ENV', true);` after the `WP_DEBUG` line (usually found at line 80).
 
-We are using [Gulp](http://gulpjs.com) here for task management.
 
-All the styles, scripts and assets should be manipulated in the `src` folder. They will get compiled via Gulp to their final locations.
+## Before You Begin
 
-Make sure you update the theme meta data that gets placed at the top of `style.css`. It can be found in `src/sass/global/_template_header.sass`.
+There are some more things you may want to tweak/configure/delete.
+
+### Template Information
+
+Make sure to update the meta data that gets placed at the top of `style.css`. This can be found in `src/sass/global/_template-header.sass` in the base theme or child theme.
+
+### Child Themes
+
+This project has an example child theme included. If you do not want to use a child theme, just delete the whole folder. If you are planning to use it, have a look in the `src/sass/styles.sass` file to see how the style system works. Similarly, there are instructions in the `functions.php` file. See the **Gulp Tasks** section for information on how to run tasks for a child theme as opposed to the base theme.
+
+### Project Plugin
+
+It has become more common (and percieved as best practice) to pull site functionality out of themes and into plugins. As such, there is a base-plugin template included in this repository.
+
+Within that plugin is a set of classes to make adding settings panels, custom post types and meta boxes easier.
+
+
+### db.php
+
+The `db.php` file, found in the `wp-content` directory, includes some functions for updating URLs, forcing theme directories and changin the upload location.
 
 
 ## Gulp Tasks
 
-### Watch
+Everything is done with gulp. Here is a list of useful tasks:
 
-Watches for changes in the `src` folder and runs the appropriate tasks and live reloads the browser.
-
-	gulp watch
+	$ gulp
 	
+Compiles the sass, runs a jshint on the javascript files and watches for changes &mdash; all in the `base-theme` directory.
 
-### Build
+	$ gulp child
+	
+Does the same thing as `gulp` but instead, does it in the `child-theme` directory.
 
-Builds all the images, scripts and styles from the `src` folder and publishes a deploy-ready `dist` directory.
+	$ gulp build
+	
+Gets the `base-theme` ready for deployment. It runs and compiles the sass into minified css, and uglifies all the JS files.
 
-	gulp build
+	$ gulp build:child
+	
+Same as `gulp build` except that it does it in the `child-theme` directory.
 
-## More Gulp Commands
+## Deployment
 
-* `gulp styles`: Updates and compiles SASS.
-* `gulp scripts`: Concatenates, minifies and compiles the JavaScript.
+This setup provides flexibility in how to deploy a project. Separate deploy hooks can be used to deploy each theme and custom plugin. Or you could deploy the whole wp-content directory and just get fancy with the `.gitignore` file.
