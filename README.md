@@ -10,7 +10,7 @@ A quick starting point for WordPress themes built from scratch.
 1. Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`
 2. Jump into the directory and delete the `.git` directory (unless you want to work on this boilerplate). You can now create a new repo if you want to.
 3. Download WordPress from [wordpress.org/download](https://wordpress.org/download).
-4. Add all the WordPress files, except for the `wp-content` directory to the root of the project. Add any of the plugins or themes that you want to their respective directories in `wp-content`.
+4. Add all the WordPress files &mdash; except for the `wp-content` directory &mdash; to the root of the project. Add any of the plugins or themes that you want to their respective directories in `wp-content`.
 5. Run `$ npm install` to get the tooling dependencies.
 6. Create your database and run the install.
 
