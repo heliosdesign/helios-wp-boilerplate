@@ -2,6 +2,20 @@
 
 A quick starting point for WordPress themes built from scratch.
 
+**Note:** This theme has been refactored to include the entire directory structure. This means that the "Getting Started" is slightly different.
+
+## Getting Started (Local)
+
+1. Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`
+2. Download WordPress from [wordpress.org/download](https://wordpress.org/download).
+3. Add the WordPress files to the root of the directory. Some of the directory tree will already be there (`wp-content/plugins`, `wp-content/themes`) so just add the missing files to those directories instead of overwriting the whole thing.
+4. Run `$ npm install` to get the dependencies for gulp.
+5. Create your database and run the install.
+
+
+## Additional Configuration
+
+We're using an extra bit of trickery
 
 ## Usage Notes
 

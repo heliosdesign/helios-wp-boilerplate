@@ -42,7 +42,6 @@ var checkCWD = function() {
 /**
  * Tasks
  */
-
 // SASS compiling task.
 gulp.task('sass', function() {
   checkCWD();
