@@ -7,7 +7,7 @@ get_header(); ?>
 
     <?php if ( have_posts() ) : ?>
 
-        <?php //helios_content_nav( 'nav-above' ); ?>
+        <?php helios_content_nav( 'nav-above' ); ?>
 
         <?php while ( have_posts() ) : the_post(); ?>
 
@@ -15,7 +15,7 @@ get_header(); ?>
 
         <?php endwhile; ?>
 
-        <?php //helios_content_nav( 'nav-below' ); ?>
+        <?php helios_content_nav( 'nav-below' ); ?>
 
     <?php else : ?>
 
