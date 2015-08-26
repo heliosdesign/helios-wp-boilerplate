@@ -32,4 +32,5 @@ wp-content/*/*/
 !README.md
 !wp-content/db.php
 !wp-content/themes/base-theme/
+!wp-content/themes/child-theme/
 !wp-content/plugins/base-plugin/
