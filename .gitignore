@@ -30,5 +30,6 @@ wp-content/*/*/
 !gulpfile.js
 !package.json
 !README.md
+!wp-content/db.php
 !wp-content/themes/base-theme/
 !wp-content/plugins/base-plugin/

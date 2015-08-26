@@ -7,35 +7,22 @@ A quick starting point for WordPress themes built from scratch.
 ## Getting Started (Local)
 
 1. Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`
-2. Download WordPress from [wordpress.org/download](https://wordpress.org/download).
-3. Add the WordPress files to the root of the directory. Some of the directory tree will already be there (`wp-content/plugins`, `wp-content/themes`) so just add the missing files to those directories instead of overwriting the whole thing.
-4. Run `$ npm install` to get the dependencies for gulp.
-5. Create your database and run the install.
+2. Jump into the directory and delete the `.git` directory (unless you want to work on this boilerplate). You can now create a new repo if you want.
+3. Download WordPress from [wordpress.org/download](https://wordpress.org/download).
+4. Add the WordPress files to the root of the directory. Some of the directory tree will already be there (`wp-content/plugins`, `wp-content/themes`) so just add the missing files to those directories instead of overwriting the whole thing.
+5. Run `$ npm install` to get the dependencies for gulp.
+6. Create your database and run the install.
 
 
 ## Additional Configuration
 
-We're using an extra bit of trickery
+We're using an extra bit of trickery to load in asset files depending on the environment. The enqueueing function (found in `base-theme/inc/functions/enqueue-functions.php`) looks to see if a `DEV_ENV` flag is set to `true`. If so, it spits out all the individual, non-minified  files defined in that block. As such, open the `/wp-config.php` file and add `define('DEV_ENV', true);` after the `WP_DEBUG` line (usually found at line 80).
+
+## Before You Begin
 
 ## Usage Notes
 
 Create a new WordPress build and navigate to the themes directory (`project-root/wp-content/themes`).
-
-Clone the boilerplate:
-
-	$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [new-theme-name]
-	
-Jump into the directory and delete the existing git info:
-
-	$ cd [new-theme-name]
-	
-	$ rm -rf .git
-	
-You can now create a new repo if you want.
-
-Run `npm install` to ensure you have the necessary node modules.
-
-We are using [Gulp](http://gulpjs.com) here for task management.
 
 All the styles, scripts and assets should be manipulated in the `src` folder. They will get compiled via Gulp to their final locations.
 
