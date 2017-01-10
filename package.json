@@ -21,7 +21,7 @@
     "title": "Helios WP-Boilerplate"
   },
   "devDependencies": {
-    "gulp": "~3.8.1",
+    "gulp": "^3.9.1",
     "gulp-autoprefixer": "0.0.6",
     "gulp-clean": "~0.2.4",
     "gulp-concat": "~2.1.7",
