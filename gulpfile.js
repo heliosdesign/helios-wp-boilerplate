@@ -1,11 +1,16 @@
+var fs              = require('fs');
+
 var gulp            = require('gulp');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var plugins         = gulpLoadPlugins();
 var runSequence     = require('run-sequence');
+var argv            = require('yargs').argv;
 
-var cwd       = './wp-content/themes/base-theme';
-var cwdChild  = './wp-content/themes/child-theme';
-// process.chdir();
+var source          = require('vinyl-source-stream');
+var buffer          = require('vinyl-buffer');
+var watchify        = require('watchify');
+var browserify      = require('browserify');
+var babel           = require('babelify');
 
 var src = {
   base: './',
@@ -25,65 +30,114 @@ var dist = {
   svg: './assets/svg/'
 };
 
+
+/**
+ * Set up the current working directory before each command.
+ */
+
+// These are the path defaults. Change them if you update the
+// theme or plugin name or location.
+var chdirs = {
+  default: './wp-content/themes/base-theme',
+  child: './wp-content/themes/child-theme',
+  plugin: './wp-content/plugins/base-plugin'
+};
+
+var cwd = chdirs[argv.dir] || chdirs[argv.d] || argv.path || argv.p || chdirs.default;
+
+process.chdir(cwd);
+
+
 /**
  * Functions
  */
-var swallowError = function(error) {
+function swallowError(error) {
   console.log(error.toString());
   this.emit('end');
 };
 
-var checkCWD = function() {
-  /**
-   * Check that the current working directory is set.
-   * If it isn't, set it to the default.
-   */
-  if (process.cwd() === process.env.INIT_CWD) {
-    console.log('Setting the CWD to %s.', cwd);
-    process.chdir(cwd);
-  }
-};
+function bundle(w, env) {
+  var prod = env === 'production';
+  // For now, let's see if always compiling to bundle works for us.
+  // If it's too weird using the same filename for both environments
+  // change the first string in the ternary to 'bundle.min.js'.
+  var name = prod ? '/bundle.js' : 'bundle.js';
+
+  if (!w) { return; }
+
+  return w.bundle()
+    .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
+    .pipe(source(src.base + name))
+    .pipe(buffer())
+    .pipe(plugins.if(prod, plugins.uglify()))
+    .pipe(gulp.dest(dist.js));
+}
+
+function runScripts(env, cb) {
+
+  // var env = env || 'development';
+  var entry = src.js + 'index.js';
+
+  fs.stat(entry, function(err, stat) {
+    var b;
+
+    if (!err) {
+      b = browserify({
+        entries: [entry],
+        paths: ['./node_modules', src.js + '/'],
+        debug: env === 'development',
+      }).transform(babel, {presets: ['es2015']});
+    }
+
+    if (cb) {
+      cb(b);
+    }
+  });
+}
 
 /**
  * Tasks
  */
 // SASS compiling task.
-gulp.task('sass', function() {
-  checkCWD();
+gulp.task('styles', function() {
   return gulp.src([src.sass + '**/*.sass'])
-    .pipe(plugins.sass())
+    .pipe(plugins.sass({
+      style: 'compressed',
+      indentedSyntax: true
+    }))
     .on('error', swallowError)
     .pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-    .pipe(gulp.dest(dist.base));
-});
-
-// CSS minifying task
-gulp.task('cssmin', function () {
-  return gulp.src([src.base + 'style.css'])
     .pipe(plugins.cssmin())
     .pipe(gulp.dest(dist.base));
 });
 
-// JS linting task.
-gulp.task('jshint', function () {
-  checkCWD();
-  return gulp.src([src.js + '**/*.js', '!' + src.js + 'lib/**.*'])
-    .pipe(plugins.jshint())
-    .pipe(plugins.jshint.reporter('default'))
-    .pipe(plugins.jshint.reporter('fail'));
+gulp.task('scripts:prod', function() {
+  runScripts('production', function(b) {
+
+    return bundle(b, 'production');
+
+    // return b.bundle()
+    //   .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
+    //   .pipe(source(src.base + '/bundle.min.js'))
+    //   .pipe(buffer())
+    //   .pipe(plugins.uglify())
+    //   .pipe(gulp.dest(dist.js));
+  });
 });
 
-// JS minifying task.
-gulp.task('uglify', function () {
-  return gulp.src([
-      src.js + 'lib/**/.js',
-      src.js + '**/*.js',
-      '!' + src.js + 'noconcat/**/*.js'
-    ])
-    .pipe(plugins.uglify())
-    .pipe(plugins.concat('application.min.js'))
-    .pipe(gulp.dest(dist.js));
+gulp.task('lint', () => {
+  return gulp.src([src.js + '**/*.js'])
+      .pipe(plugins.eslint())
+      .pipe(plugins.eslint.format())
+      .pipe(plugins.eslint.failAfterError());
 });
+
+// CSS minifying task
+// gulp.task('cssmin', function () {
+//   return gulp.src([src.base + 'style.css'])
+//     .pipe(plugins.cssmin())
+//     .pipe(gulp.dest(dist.base));
+// });
 
 gulp.task('noconcat', function () {
   return gulp.src(src.js + 'noconcat/**/*.js')
@@ -105,33 +159,27 @@ gulp.task('svgmin', function() {
     .pipe(gulp.dest(dist.svg));
 });
 
-gulp.task('watch', function() {
-  checkCWD();
+gulp.task('default', ['styles', 'lint'], (done) => {
   plugins.livereload.listen();
 
-  // watch just the CSS so livereload doesn’t reload the entire page
-  gulp.watch([src.sass + '**/*.sass'], ['sass']);
-  gulp.watch(src.base + '**/*.css', plugins.livereload.changed);
+  // Styles
+  gulp.watch(src.sass + '/**/*.sass', ['styles']);
+  gulp.watch([
+    src.base + '/js/*.js',
+    src.base + '/style.css'
+  ], plugins.livereload.changed)
 
-  gulp.watch(src.js + '**/*.js', ['jshint']).on('change', plugins.livereload.changed);
-});
+  runScripts(null, (b) => {
 
-gulp.task('default', function(done) {
-  process.chdir(cwd);
-  runSequence('sass', ['imagemin', 'svgmin'], 'jshint', 'watch', done);
-});
+    if (b) {
+      var w = watchify(b);
+      w.on('update', () => bundle(w));
+      bundle(w);
+    }
 
-gulp.task('child', function(done) {
-  process.chdir(cwdChild);
-  runSequence('sass', ['imagemin', 'svgmin'], 'jshint', 'watch', done);
+  });
 });
 
 gulp.task('build', function(done) {
-  process.chdir(cwd);
-  runSequence('sass', ['cssmin', 'imagemin', 'svgmin'], 'jshint', ['uglify', 'noconcat'], done);
-});
-
-gulp.task('build:child', function(done) {
-  process.chdir(cwdChild);
-  runSequence('sass', ['cssmin', 'imagemin', 'svgmin'], 'jshint', ['uglify', 'noconcat'], done);
+  runSequence('styles', 'lint', 'scripts:prod', ['imagemin', 'svgmin'], 'noconcat', done);
 });

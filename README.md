@@ -12,13 +12,15 @@ A quick starting point for WordPress themes built from scratch.
 3. Download WordPress from [wordpress.org](https://wordpress.org).
 4. Add all the WordPress files &mdash; except for the `wp-content` directory &mdash; to the root of the project. Add any of the plugins or themes that you want to their respective directories in `wp-content`.
 5. Run `$ npm install` to get the tooling dependencies.
-6. If you change the name of your theme from `base-theme` (as you should), open `gulpfile.js` and update the `cwd` variable on line 6.
+6. If you change the name of your theme, child theme or base plugin (as you should), make sure you adjust the appropriate path in the `chdirs` object at the top of `gulpfile.js`.
 7. Change the meta information at the top of `src/sass/global/_template-header.sass` in the theme directory.
 8. Run `$ gulp` to recompile the CSS with the new template information and to make sure Gulp is running without errors.
 9. Create your database and run the WordPress install by navigating to the URL and following the directions.
 
 
 ## Additional Configuration
+
+*Note: This secton is moot right now. The only thing we were using the `DEV_ENV` flag for was unminified JavaScripts. Right now we're compiling to the same file (`bundle.min.js`). Just use `gulp build` before you deploy to make sure the JS is minified.*
 
 We're using an extra bit of trickery to load in asset files depending on the environment. The enqueueing function (found in `base-theme/inc/functions/enqueue-functions.php`) looks to see if a `DEV_ENV` flag is set to `true`. If so, it spits out all the individual, non-minified  files defined in that block. As such, open the `/wp-config.php` file and add `define('DEV_ENV', true);` after the `WP_DEBUG` line close to bottom of the file.
 
@@ -37,7 +39,7 @@ This project has an example child theme included. If you do not want to use a ch
 
 ### Project Plugin
 
-It has become more common (and percieved as best practice) to pull site functionality out of themes and into plugins. As such, there is a base-plugin template included in this repository.
+It has become more common (and viewed as best practice) to pull site functionality out of themes and into plugins. As such, there is a base-plugin template included in this repository.
 
 Within that plugin is a set of classes to make adding settings panels, custom post types and meta boxes easier.
 
@@ -53,19 +55,43 @@ Everything is done with gulp. Here is a list of useful tasks:
 
 	$ gulp
 	
-Compiles the sass, runs a jshint on the javascript files and watches for changes &mdash; all in the `base-theme` directory.
-
-	$ gulp child
-	
-Does the same thing as `gulp` but instead, does it in the `child-theme` directory.
+Compiles the sass, runs a linter and bundles the JavaScript files and watches the `src/` for changes.
 
 	$ gulp build
 	
-Gets the `base-theme` ready for deployment. It runs and compiles the sass into minified css, and uglifies all the JS files.
+Gets the specified working directory ready for deployment. It runs and compiles the sass into minified css, and uglifies all the JS files.
 
-	$ gulp build:child
-	
-Same as `gulp build` except that it does it in the `child-theme` directory.
+Speaking of working directory, you can run either of these commands on any directory. Of course, it will only do something if that directory contains a `src/` folder.
+
+If you will be running the command regularly (which is most likely the case), add the path in the `chdirs` object near the top of `gulpfile.js`. Once that is done you can run gulp on that directory with the `--dir` or `-d` flag.
+
+#### Example
+In `gulpfile.js`:
+
+```
+var chdirs = {
+    default: './wp-content/themes/base-theme',
+    child: './wp-content/themes/child-theme'    // <= Add this path.
+};
+```
+Then run the command:
+
+```
+$ gulp build --dir child
+    or
+$ gulp build -d child
+```
+You can also use the `--path` or `-p` command to define the path specifically:
+
+```
+$ gulp build --path ./wp-content/themes/child-theme
+    or
+$ gulp build -p ./wp-content/themes/child-theme
+```
+
+But that might get pretty cumbersome.
+
+
 
 ## Deployment
 
