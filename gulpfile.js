@@ -1,17 +1,16 @@
+var fs              = require('fs');
+
 var gulp            = require('gulp');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var plugins         = gulpLoadPlugins();
 var runSequence     = require('run-sequence');
+var argv            = require('yargs').argv;
 
 var source          = require('vinyl-source-stream');
 var buffer          = require('vinyl-buffer');
 var watchify        = require('watchify');
 var browserify      = require('browserify');
 var babel           = require('babelify');
-
-var cwd       = './wp-content/themes/base-theme';
-var cwdChild  = './wp-content/themes/child-theme';
-process.chdir(cwd);
 
 var src = {
   base: './',
@@ -31,6 +30,24 @@ var dist = {
   svg: './assets/svg/'
 };
 
+
+/**
+ * Set up the current working directory before each command.
+ */
+
+// These are the path defaults. Change them if you update the
+// theme or plugin name or location.
+var chdirs = {
+  default: './wp-content/themes/base-theme',
+  child: './wp-content/themes/child-theme',
+  plugin: './wp-content/plugins/base-plugin'
+};
+
+var cwd = chdirs[argv.dir] || chdirs[argv.d] || argv.path || argv.p || chdirs.default;
+
+process.chdir(cwd);
+
+
 /**
  * Functions
  */
@@ -44,33 +61,32 @@ function bundle(w) {
     .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
     .pipe(source(src.base + '/bundle.js'))
     .pipe(buffer())
-    .pipe(plugins.sourcemaps.init({ loadMaps: true }))
-    .pipe(plugins.sourcemaps.write('./'))
+    // .pipe(plugins.sourcemaps.init({ loadMaps: true }))
+    // .pipe(plugins.sourcemaps.write('./'))
     .pipe(gulp.dest(dist.js));
 }
 
-function runScripts(env) {
+function runScripts(env, cb) {
+
   var env = env || 'development';
-  var w = browserify({
-    entries: [src.js + '/index.js'],
-    paths: ['./node_modules', src.js + '/'],
-    debug: env === 'development',
-  }).transform(babel, {presets: ['es2015']});
+  var entry = src.js + 'index.js';
 
-  return w;
+  fs.stat(entry, function(err, stat) {
+    var b;
+
+    if (!err) {
+      b = browserify({
+        entries: [entry],
+        paths: ['./node_modules', src.js + '/'],
+        debug: env === 'development',
+      }).transform(babel, {presets: ['es2015']});
+    }
+
+    if (cb) {
+      cb(b);
+    }
+  });
 }
-
-/**
- * Check that the current working directory is set.
- * If it isn't, set it to the default.
- */
-// var checkCWD = function() {
-
-//   if (process.cwd() === process.env.INIT_CWD) {
-//     console.log('Setting the CWD to %s.', cwd);
-//     process.chdir(cwd);
-//   }
-// };
 
 /**
  * Tasks
@@ -89,14 +105,17 @@ gulp.task('styles', function() {
 });
 
 gulp.task('scripts:prod', function() {
-  var w = runScripts('production');
+  runScripts('production', function(b) {
 
-  return w.bundle()
-    .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
-    .pipe(source(src.base + '/bundle.min.js'))
-    .pipe(buffer())
-    .pipe(plugins.uglify())
-    .pipe(gulp.dest(dist.js));
+    if (!b) { return; }
+
+    return b.bundle()
+      .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
+      .pipe(source(src.base + '/bundle.min.js'))
+      .pipe(buffer())
+      .pipe(plugins.uglify())
+      .pipe(gulp.dest(dist.js));
+  });
 });
 
 gulp.task('lint', () => {
@@ -143,29 +162,17 @@ gulp.task('default', ['styles', 'lint'], (done) => {
     src.base + '/style.css'
   ], plugins.livereload.changed)
 
-  // Scripts
-  var w = watchify(runScripts());
+  runScripts(null, (b) => {
 
-  w.on('update', () => {
-    bundle(w);
+    if (b) {
+      var w = watchify(b);
+      w.on('update', () => bundle(w));
+      bundle(w);
+    }
+
   });
-
-  bundle(w);
-
 });
 
 gulp.task('build', function(done) {
   runSequence('styles', 'lint', 'scripts:prod', ['imagemin', 'svgmin'], 'noconcat', done);
 });
-
-// TODO: Functionality for switching to child directory and plugin directories.
-
-// gulp.task('child', function(done) {
-//   process.chdir(cwdChild);
-//   runSequence('styles', ['imagemin', 'svgmin'], 'jshint', 'watch', done);
-// });
-
-// gulp.task('build:child', function(done) {
-//   process.chdir(cwdChild);
-//   runSequence('styles', ['cssmin', 'imagemin', 'svgmin'], 'jshint', ['uglify', 'noconcat'], done);
-// });
