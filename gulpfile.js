@@ -56,19 +56,26 @@ function swallowError(error) {
   this.emit('end');
 };
 
-function bundle(w) {
+function bundle(w, env) {
+  var prod = env === 'production';
+  // For now, let's see if always compiling to bundle works for us.
+  // If it's too weird using the same filename for both environments
+  // change the first string in the ternary to 'bundle.min.js'.
+  var name = prod ? '/bundle.js' : 'bundle.js';
+
+  if (!w) { return; }
+
   return w.bundle()
     .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
-    .pipe(source(src.base + '/bundle.js'))
+    .pipe(source(src.base + name))
     .pipe(buffer())
-    // .pipe(plugins.sourcemaps.init({ loadMaps: true }))
-    // .pipe(plugins.sourcemaps.write('./'))
+    .pipe(plugins.if(prod, plugins.uglify()))
     .pipe(gulp.dest(dist.js));
 }
 
 function runScripts(env, cb) {
 
-  var env = env || 'development';
+  // var env = env || 'development';
   var entry = src.js + 'index.js';
 
   fs.stat(entry, function(err, stat) {
@@ -107,14 +114,14 @@ gulp.task('styles', function() {
 gulp.task('scripts:prod', function() {
   runScripts('production', function(b) {
 
-    if (!b) { return; }
+    return bundle(b, 'production');
 
-    return b.bundle()
-      .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
-      .pipe(source(src.base + '/bundle.min.js'))
-      .pipe(buffer())
-      .pipe(plugins.uglify())
-      .pipe(gulp.dest(dist.js));
+    // return b.bundle()
+    //   .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
+    //   .pipe(source(src.base + '/bundle.min.js'))
+    //   .pipe(buffer())
+    //   .pipe(plugins.uglify())
+    //   .pipe(gulp.dest(dist.js));
   });
 });
 

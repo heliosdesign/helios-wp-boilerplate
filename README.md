@@ -20,6 +20,8 @@ A quick starting point for WordPress themes built from scratch.
 
 ## Additional Configuration
 
+*Note: This secton is moot right now. The only thing we were using the `DEV_ENV` flag for was unminified JavaScripts. Right now we're compiling to the same file (`bundle.min.js`). Just use `gulp build` before you deploy to make sure the JS is minified.*
+
 We're using an extra bit of trickery to load in asset files depending on the environment. The enqueueing function (found in `base-theme/inc/functions/enqueue-functions.php`) looks to see if a `DEV_ENV` flag is set to `true`. If so, it spits out all the individual, non-minified  files defined in that block. As such, open the `/wp-config.php` file and add `define('DEV_ENV', true);` after the `WP_DEBUG` line close to bottom of the file.
 
 
@@ -37,7 +39,7 @@ This project has an example child theme included. If you do not want to use a ch
 
 ### Project Plugin
 
-It has become more common (and percieved as best practice) to pull site functionality out of themes and into plugins. As such, there is a base-plugin template included in this repository.
+It has become more common (and viewed as best practice) to pull site functionality out of themes and into plugins. As such, there is a base-plugin template included in this repository.
 
 Within that plugin is a set of classes to make adding settings panels, custom post types and meta boxes easier.
 
