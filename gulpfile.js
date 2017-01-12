@@ -1,34 +1,19 @@
-var fs              = require('fs');
+'use strict'
 
-var gulp            = require('gulp');
-var gulpLoadPlugins = require('gulp-load-plugins');
-var plugins         = gulpLoadPlugins();
-var runSequence     = require('run-sequence');
-var argv            = require('yargs').argv;
+const fs              = require('fs');
+const Q               = require('q');
 
-var source          = require('vinyl-source-stream');
-var buffer          = require('vinyl-buffer');
-var watchify        = require('watchify');
-var browserify      = require('browserify');
-var babel           = require('babelify');
+const gulp            = require('gulp');
+const gulpLoadPlugins = require('gulp-load-plugins');
+const plugins         = gulpLoadPlugins();
+const runSequence     = require('run-sequence');
+const argv            = require('yargs').argv;
 
-var src = {
-  base: './',
-  css: './css',
-  sass: './src/sass/',
-  js: './src/js/',
-  img: './src/assets/img/',
-  svg: './src/assets/svg/',
-  sprite: './src/assets/svgsprites'
-};
-
-var dist = {
-  base: './',
-  css: './css/',
-  js: './js/',
-  img: './assets/img/',
-  svg: './assets/svg/'
-};
+const source          = require('vinyl-source-stream');
+const buffer          = require('vinyl-buffer');
+const watchify        = require('watchify');
+const browserify      = require('browserify');
+const babel           = require('babelify');
 
 
 /**
@@ -37,20 +22,18 @@ var dist = {
 
 // These are the path defaults. Change them if you update the
 // theme or plugin name or location.
-var chdirs = {
+const chdirs = {
   default: './wp-content/themes/base-theme',
   child: './wp-content/themes/child-theme',
   plugin: './wp-content/plugins/base-plugin'
 };
 
-var cwd = chdirs[argv.dir] || chdirs[argv.d] || argv.path || argv.p || chdirs.default;
-
-process.chdir(cwd);
-
+let cwd = chdirs[argv.dir] || chdirs[argv.d] || argv.path || argv.p || chdirs.default;
 
 /**
  * Functions
  */
+
 function swallowError(error) {
   console.log(error.toString());
   this.emit('end');
@@ -67,25 +50,26 @@ function bundle(w, env) {
 
   return w.bundle()
     .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
-    .pipe(source(src.base + name))
+    .pipe(source(cwd + name))
     .pipe(buffer())
     .pipe(plugins.if(prod, plugins.uglify()))
-    .pipe(gulp.dest(dist.js));
+    .pipe(plugins.rename((path) => {
+      path.dirname += '/js';
+    }))
+    .pipe(gulp.dest('./'));
 }
 
 function runScripts(env, cb) {
-
-  // var env = env || 'development';
-  var entry = src.js + 'index.js';
+  const entry = cwd + '/src/js/index.js';
 
   fs.stat(entry, function(err, stat) {
-    var b;
+    let b;
 
     if (!err) {
       b = browserify({
         entries: [entry],
-        paths: ['./node_modules', src.js + '/'],
-        debug: env === 'development',
+        paths: ['./node_modules', cwd + '/src/js'],
+        debug: env !== 'production',
       }).transform(babel, {presets: ['es2015']});
     }
 
@@ -100,7 +84,7 @@ function runScripts(env, cb) {
  */
 // SASS compiling task.
 gulp.task('styles', function() {
-  return gulp.src([src.sass + '**/*.sass'])
+  return gulp.src([cwd + '/src/sass/**/*.sass'])
     .pipe(plugins.sass({
       style: 'compressed',
       indentedSyntax: true
@@ -108,25 +92,22 @@ gulp.task('styles', function() {
     .on('error', swallowError)
     .pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
     .pipe(plugins.cssmin())
-    .pipe(gulp.dest(dist.base));
+    .pipe(gulp.dest(cwd));
 });
 
-gulp.task('scripts:prod', function() {
-  runScripts('production', function(b) {
 
-    return bundle(b, 'production');
-
-    // return b.bundle()
-    //   .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
-    //   .pipe(source(src.base + '/bundle.min.js'))
-    //   .pipe(buffer())
-    //   .pipe(plugins.uglify())
-    //   .pipe(gulp.dest(dist.js));
-  });
+gulp.task('scripts', () => {
+  runScripts(null, b => bundle(b));
 });
+
+
+gulp.task('scripts:prod', () => {
+  runScripts('production', b => bundle(b, 'production'));
+});
+
 
 gulp.task('lint', () => {
-  return gulp.src([src.js + '**/*.js'])
+  return gulp.src([cwd + '/src/js/**/*.js'])
       .pipe(plugins.eslint())
       .pipe(plugins.eslint.format())
       .pipe(plugins.eslint.failAfterError());
@@ -140,23 +121,23 @@ gulp.task('lint', () => {
 // });
 
 gulp.task('noconcat', function () {
-  return gulp.src(src.js + 'noconcat/**/*.js')
+  return gulp.src(cwd + '/src/js/noconcat/**/*.js')
     .pipe(plugins.uglify())
-    .pipe(gulp.dest(dist.js));
+    .pipe(gulp.dest(cwd + '/js/noconcat'));
 });
 
 // Image minifying task.
-gulp.task('imagemin', function() {
-  return gulp.src(src.img + '**/*.{png,gif,jpg}')
+gulp.task('imagemin', () => {
+  return gulp.src(cwd + '/src/assets/img/**/*.{png,gif,jpg}')
     .pipe(plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
-    .pipe(gulp.dest(dist.img));
+    .pipe(gulp.dest(cwd + '/assets/img'));
 });
 
 // SVG minifying task.
-gulp.task('svgmin', function() {
-  return gulp.src(src.svg + '**/*.svg')
+gulp.task('svgmin', () => {
+  return gulp.src(cwd + '/src/assets/svg/**/*.svg')
     .pipe(plugins.svgmin())
-    .pipe(gulp.dest(dist.svg));
+    .pipe(gulp.dest(cwd + '/assets/svg'));
 });
 
 gulp.task('default', ['styles', 'lint'], (done) => {
@@ -170,16 +151,45 @@ gulp.task('default', ['styles', 'lint'], (done) => {
   ], plugins.livereload.changed)
 
   runScripts(null, (b) => {
-
     if (b) {
       var w = watchify(b);
       w.on('update', () => bundle(w));
       bundle(w);
     }
-
   });
 });
 
-gulp.task('build', function(done) {
-  runSequence('styles', 'lint', 'scripts:prod', ['imagemin', 'svgmin'], 'noconcat', done);
+gulp.task('build', done => {
+  runSequence('styles', 'lint', 'scripts:prod', ['imagemin', 'svgmin'], done);
+});
+
+gulp.task('build:all', done => {
+
+  // Runs through all the paths listed in the chdirs object and executes
+  // the build process for them.
+
+  let paths = Object.keys(chdirs).map((key) => chdirs[key]);
+
+  function runBuild(path) {
+
+    console.log('');
+    console.log('');
+    plugins.util.log(plugins.util.colors.green('Running build for: ') + path);
+
+    return Q.Promise(function(resolve, reject) {
+      cwd = path;
+
+      runSequence('styles', 'lint', 'scripts:prod', ['imagemin', 'svgmin'], function() {
+        console.log('');
+        resolve();
+      });
+    });
+  }
+
+  let result = Q();
+  paths.forEach(path => {
+    result = result.then(runBuild.bind(null, path));
+  });
+  return result;
+
 });

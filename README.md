@@ -53,15 +53,23 @@ The `db.php` file, found in the `wp-content` directory, includes some functions 
 
 Everything is done with gulp. Here is a list of useful tasks:
 
-	$ gulp
+
+`gulp`
 	
 Compiles the sass, runs a linter and bundles the JavaScript files and watches the `src/` for changes.
 
-	$ gulp build
+`gulp build`
 	
 Gets the specified working directory ready for deployment. It runs and compiles the sass into minified css, and uglifies all the JS files.
 
-Speaking of working directory, you can run either of these commands on any directory. Of course, it will only do something if that directory contains a `src/` folder.
+`gulp build:all`
+
+Runs `gulp build` on each of the paths in the `chdirs` object in `gulpfile.js`. More on the `chdirs` object below.
+
+
+#### Options
+
+You can run `gulp` and `gulp build` on any directory. Of course, it will only do something if that directory contains a `src/` folder.
 
 If you will be running the command regularly (which is most likely the case), add the path in the `chdirs` object near the top of `gulpfile.js`. Once that is done you can run gulp on that directory with the `--dir` or `-d` flag.
 
