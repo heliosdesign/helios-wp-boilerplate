@@ -46,7 +46,7 @@ Within that plugin is a set of classes to make adding settings panels, custom po
 
 ### db.php
 
-The `db.php` file, found in the `wp-content` directory, includes some functions for updating URLs, forcing theme directories and changin the upload location.
+The `db.php` file, found in the `wp-content` directory, includes some functions for updating URLs, forcing theme directories and changing the upload location.
 
 
 ## Gulp Tasks

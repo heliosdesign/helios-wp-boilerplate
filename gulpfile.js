@@ -44,7 +44,7 @@ function bundle(w, env) {
   // For now, let's see if always compiling to bundle works for us.
   // If it's too weird using the same filename for both environments
   // change the first string in the ternary to 'bundle.min.js'.
-  var name = prod ? '/bundle.js' : 'bundle.js';
+  var name = prod ? '/bundle.js' : '/bundle.js';
 
   if (!w) { return; }
 
@@ -84,7 +84,7 @@ function runScripts(env, cb) {
  */
 // SASS compiling task.
 gulp.task('styles', function() {
-  return gulp.src([cwd + '/src/sass/**/*.sass'])
+  return gulp.src(['./wp-content/**/*.sass'])
     .pipe(plugins.sass({
       style: 'compressed',
       indentedSyntax: true
@@ -92,7 +92,11 @@ gulp.task('styles', function() {
     .on('error', swallowError)
     .pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
     .pipe(plugins.cssmin())
-    .pipe(gulp.dest(cwd));
+    .pipe(plugins.rename((path) => {
+      const repl = path.basename === 'style' ? '' : 'css';
+      path.dirname = path.dirname.replace('src/sass', repl);
+    }))
+    .pipe(gulp.dest('./wp-content'));
 });
 
 
@@ -144,10 +148,10 @@ gulp.task('default', ['styles', 'lint'], (done) => {
   plugins.livereload.listen();
 
   // Styles
-  gulp.watch(src.sass + '/**/*.sass', ['styles']);
+  gulp.watch('./wp-content/**/*.sass', ['styles']);
   gulp.watch([
-    src.base + '/js/*.js',
-    src.base + '/style.css'
+    cwd + '/src/js/**/*.js',
+    './wp-content/**/*.css'
   ], plugins.livereload.changed)
 
   runScripts(null, (b) => {
@@ -163,7 +167,7 @@ gulp.task('build', done => {
   runSequence('styles', 'lint', 'scripts:prod', ['imagemin', 'svgmin'], done);
 });
 
-gulp.task('build:all', done => {
+gulp.task('build:all', ['styles'], done => {
 
   // Runs through all the paths listed in the chdirs object and executes
   // the build process for them.
@@ -179,7 +183,7 @@ gulp.task('build:all', done => {
     return Q.Promise(function(resolve, reject) {
       cwd = path;
 
-      runSequence('styles', 'lint', 'scripts:prod', ['imagemin', 'svgmin'], function() {
+      runSequence('lint', 'scripts:prod', ['imagemin', 'svgmin'], function() {
         console.log('');
         resolve();
       });
