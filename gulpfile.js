@@ -19,9 +19,11 @@ const es              = require('event-stream');
 
 const config = require('./gulpconfig');
 
-console.log(config);
+let ENV = (argv.production || argv.prod || argv.p) ? 'production' : 'development';
 
-let ENV = (argv.prod || argv.p) ? 'production' : 'development';
+if (argv.development || argv.dev || argv.d) {
+  ENV = 'development';
+}
 
 /**
  * Functions
@@ -131,12 +133,11 @@ gulp.task('styles', function() {
 
   return gulp.src(sources, {base: './'})
     .pipe(plugins.sass({
-      style: 'compressed',
+      outputStyle: ENV === 'production' ? 'compressed' : 'nested',
+      sourceComments: ENV !== 'production',
       indentedSyntax: true
-    }))
-    .on('error', swallowError)
+    }).on('error', swallowError))
     .pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-    .pipe(plugins.cssmin())
     .pipe(plugins.rename((path) => {
       const repl = path.basename === 'style' ? '' : 'css';
       path.dirname = path.dirname.replace('src/sass', repl);
