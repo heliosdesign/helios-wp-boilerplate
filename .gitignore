@@ -29,6 +29,7 @@ wp-content/*/*/
 !.gitignore
 !.eslintrc
 !gulpfile.js
+!gulpconfig.js
 !package.json
 !README.md
 !wp-content/db.php
