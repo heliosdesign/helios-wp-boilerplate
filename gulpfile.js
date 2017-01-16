@@ -17,22 +17,11 @@ const browserify      = require('browserify');
 const babel           = require('babelify');
 const es              = require('event-stream');
 
+const config = require('./gulpconfig');
 
-/**
- * Set up the current working directory before each command.
- */
+console.log(config);
 
 let ENV = (argv.prod || argv.p) ? 'production' : 'development';
-
-const config = {
-  themes: [
-    'base-theme',
-    'child-theme'
-  ],
-  plugins: [
-    'base-plugin'
-  ]
-};
 
 /**
  * Functions

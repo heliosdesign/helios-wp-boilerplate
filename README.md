@@ -33,6 +33,10 @@ There are some more things you may want to tweak/configure/delete.
 
 Make sure to update the meta data that gets placed at the top of `style.css`. This can be found in `src/sass/global/_template-header.sass` in the base theme or child theme.
 
+### Gulp Config
+
+Whenever you add, delete, or change the name of a plugin or theme you should update the `gulpconfig.js` file. This tells gulp which themes are custom and in development and which are from vendors.
+
 ### Child Themes
 
 This project has an example child theme included. If you do not want to use a child theme, just delete the whole folder. If you are planning to use it, have a look in the `src/sass/styles.sass` file to see how the style system works. Similarly, there are instructions in the `functions.php` file. See the **Gulp Tasks** section for information on how to run tasks for a child theme as opposed to the base theme.
@@ -62,42 +66,66 @@ Compiles the sass, runs a linter and bundles the JavaScript files and watches th
 	
 Gets the specified working directory ready for deployment. It runs and compiles the sass into minified css, and uglifies all the JS files.
 
-`gulp build:all`
+### Other Tasks
 
-Runs `gulp build` on each of the paths in the `chdirs` object in `gulpfile.js`. More on the `chdirs` object below.
+`gulp styles`: Compile SASS in `src/sass/`. 
+
+*Note: If the file is called `style.sass` it will be compiled to `/style.css`. Any other compilable sass file will end up in the `/css/` directory.* 
+
+`gulp scripts`: Bundle the JavaScripts in `src/js/`.
+
+`gulp lint`: Use ESLint to make sure there are no JS errors.
+
+`gulp imagemin`: Minify all the images in `src/assets/img/`.
+
+`gulp svgmin`: Optimize svgs in `src/assets/svg/`.
 
 
-#### Options
 
-You can run `gulp` and `gulp build` on any directory. Of course, it will only do something if that directory contains a `src/` folder.
+All tasks are run on all plugins and themes defined in the `gulpconfig.js` file unless an option is used to specify which directory to use.
 
-If you will be running the command regularly (which is most likely the case), add the path in the `chdirs` object near the top of `gulpfile.js`. Once that is done you can run gulp on that directory with the `--dir` or `-d` flag.
 
-#### Example
-In `gulpfile.js`:
+### Gulp Task Options
 
-```
-var chdirs = {
-    default: './wp-content/themes/base-theme',
-    child: './wp-content/themes/child-theme'    // <= Add this path.
-};
-```
-Then run the command:
+##### --theme [theme-name], --plugin [plugin-name]
 
-```
-$ gulp build --dir child
-    or
-$ gulp build -d child
-```
-You can also use the `--path` or `-p` command to define the path specifically:
+Run any task on a specific theme or plugin. The name is optional. If left out the task will be run on all themes or plugins defined in the config file.
 
 ```
-$ gulp build --path ./wp-content/themes/child-theme
-    or
-$ gulp build -p ./wp-content/themes/child-theme
+$ gulp build --theme child-theme
+// Will only build the child theme.
+
+$ gulp imagemin --plugin
+// Will minify any images in custom plugins (not in themes).
 ```
 
-But that might get pretty cumbersome.
+##### --dev, -d
+
+Run the task in development mode (ie. don't minify scripts and styles). All tasks are run in dev mode by default except `gulp build`.
+
+```
+$ gulp build --dev
+// Doesn't  minify styles and scripts.
+```
+
+
+##### --prod, -p
+
+Run the task in production mode.
+
+```
+gulp watch -p
+// Will minify everything while you are developing.
+```
+
+##### Combining
+
+It's fine to combine options.
+
+```
+$gulp build -d --theme base-theme
+// Build the base theme but don't minify styles or scripts.
+```
 
 
 
