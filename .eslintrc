@@ -108,7 +108,7 @@
       "no-trailing-spaces": "off",
       "no-this-before-super": "error",
       "no-throw-literal": "off",
-      "no-undef": "error",
+      "no-undef": "warn",
       "no-undef-init": "off",
       "no-undefined": "off",
       "no-unexpected-multiline": "error",

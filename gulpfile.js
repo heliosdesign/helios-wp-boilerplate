@@ -5,6 +5,7 @@ const Q               = require('q');
 
 const gulp            = require('gulp');
 const gulpLoadPlugins = require('gulp-load-plugins');
+const glob            = require('multi-glob').glob;
 const plugins         = gulpLoadPlugins();
 const runSequence     = require('run-sequence');
 const argv            = require('yargs').argv;
@@ -14,21 +15,15 @@ const buffer          = require('vinyl-buffer');
 const watchify        = require('watchify');
 const browserify      = require('browserify');
 const babel           = require('babelify');
+const es              = require('event-stream');
 
+const config = require('./gulpconfig');
 
-/**
- * Set up the current working directory before each command.
- */
+let ENV = (argv.production || argv.prod || argv.p) ? 'production' : 'development';
 
-// These are the path defaults. Change them if you update the
-// theme or plugin name or location.
-const chdirs = {
-  default: './wp-content/themes/base-theme',
-  child: './wp-content/themes/child-theme',
-  plugin: './wp-content/plugins/base-plugin'
-};
-
-let cwd = chdirs[argv.dir] || chdirs[argv.d] || argv.path || argv.p || chdirs.default;
+if (argv.development || argv.dev || argv.d) {
+  ENV = 'development';
+}
 
 /**
  * Functions
@@ -39,44 +34,92 @@ function swallowError(error) {
   this.emit('end');
 };
 
-function bundle(w, env) {
-  var prod = env === 'production';
-  // For now, let's see if always compiling to bundle works for us.
-  // If it's too weird using the same filename for both environments
-  // change the first string in the ternary to 'bundle.min.js'.
-  var name = prod ? '/bundle.js' : '/bundle.js';
+function getSrc(matcher, location) {
 
-  if (!w) { return; }
+  let src = [];
 
-  return w.bundle()
+  if (location) {
+
+    if (location === 'plugins' || location === 'themes') {
+      config[location].forEach((name) => {
+        src.push(matcher.replace('%location%', `${location}/${name}`))
+      });
+    } else {
+      src.push(matcher.replace('%location%', location));
+    }
+    
+  } else {
+
+    config.themes.forEach((name) => {
+      src.push(matcher.replace('%location%', `themes/${name}`))
+    });
+
+    config.plugins.forEach((name) => {
+      src.push(matcher.replace('%location%', `plugins/${name}`));
+    });
+  }
+
+  return src;
+}
+
+function getLocation(argv) {
+
+  if (argv.plugin) {
+    return typeof argv.plugin === 'string' ? `plugins/${argv.plugin}` : 'plugins';
+  } else if (argv.theme) {
+    return typeof argv.theme === 'string' ? `themes/${argv.theme}` : 'themes';
+  } else {
+    return null;
+  }
+}
+
+
+function bundle(entry, env) {
+
+  var paths = ['./node_modules'];
+  paths.push(entry.substr(0, entry.lastIndexOf('js/')+2));
+
+  return browserify({
+    entries: [entry],
+    paths: paths,
+    debug: env !== 'production',
+  }).transform(babel, {presets: ['es2015']})
+    .bundle()
     .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
-    .pipe(source(cwd + name))
+    .pipe(source(entry))
     .pipe(buffer())
-    .pipe(plugins.if(prod, plugins.uglify()))
+    .pipe(plugins.if(env === 'production', plugins.uglify()))
     .pipe(plugins.rename((path) => {
-      path.dirname += '/js';
+      // path.dirname += '/js';
+      path.dirname = path.dirname.replace('src/js', 'js');
+      path.extname = '.bundle.js';
     }))
     .pipe(gulp.dest('./'));
 }
 
-function runScripts(env, cb) {
-  const entry = cwd + '/src/js/index.js';
-
-  fs.stat(entry, function(err, stat) {
-    let b;
-
-    if (!err) {
-      b = browserify({
-        entries: [entry],
-        paths: ['./node_modules', cwd + '/src/js'],
-        debug: env !== 'production',
-      }).transform(babel, {presets: ['es2015']});
+function getScriptsArr(src) {
+  return Q.Promise((resolve, reject) => {
+    if (!src) {
+      reject(new Error('No path provided.'));
     }
 
-    if (cb) {
-      cb(b);
-    }
+    glob(src, (err, files) => {
+      if (err) {
+        reject(err);
+      } else if (!files.length) {
+        reject(new Error('No files found.'));
+      } else {
+        resolve(files);
+      }
+    });
   });
+}
+
+function runScripts(sources, env) {
+  getScriptsArr(sources)
+    .then(files => files.map((entry) => bundle(entry, env)))
+    .then(tasks => es.merge.apply(null, tasks))
+    .catch(err => console.log(err));
 }
 
 /**
@@ -84,116 +127,95 @@ function runScripts(env, cb) {
  */
 // SASS compiling task.
 gulp.task('styles', function() {
-  return gulp.src(['./wp-content/**/*.sass'])
+
+  const location = getLocation(argv);
+  const sources = getSrc('./wp-content/%location%/src/sass/**/*.sass', location);
+
+  return gulp.src(sources, {base: './'})
     .pipe(plugins.sass({
-      style: 'compressed',
+      outputStyle: ENV === 'production' ? 'compressed' : 'nested',
+      sourceComments: ENV !== 'production',
       indentedSyntax: true
-    }))
-    .on('error', swallowError)
+    }).on('error', swallowError))
     .pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-    .pipe(plugins.cssmin())
     .pipe(plugins.rename((path) => {
       const repl = path.basename === 'style' ? '' : 'css';
       path.dirname = path.dirname.replace('src/sass', repl);
     }))
-    .pipe(gulp.dest('./wp-content'));
+    .pipe(gulp.dest('./'));
 });
 
 
-gulp.task('scripts', () => {
-  runScripts(null, b => bundle(b));
+gulp.task('scripts', ['lint'], () => {
+
+  const location = getLocation(argv);
+  const sources = getSrc('./wp-content/%location%/src/js/**.js', location);
+
+  runScripts(sources, ENV);
 });
-
-
-gulp.task('scripts:prod', () => {
-  runScripts('production', b => bundle(b, 'production'));
-});
-
 
 gulp.task('lint', () => {
-  return gulp.src([cwd + '/src/js/**/*.js'])
-      .pipe(plugins.eslint())
-      .pipe(plugins.eslint.format())
-      .pipe(plugins.eslint.failAfterError());
-});
 
-// CSS minifying task
-// gulp.task('cssmin', function () {
-//   return gulp.src([src.base + 'style.css'])
-//     .pipe(plugins.cssmin())
-//     .pipe(gulp.dest(dist.base));
-// });
+  const location = getLocation(argv);
+  const sources = getSrc('./wp-content/%location%/src/js/**/*.js', location);
 
-gulp.task('noconcat', function () {
-  return gulp.src(cwd + '/src/js/noconcat/**/*.js')
-    .pipe(plugins.uglify())
-    .pipe(gulp.dest(cwd + '/js/noconcat'));
+  return gulp.src(sources)
+    .pipe(plugins.eslint())
+    .pipe(plugins.eslint.format())
+    .pipe(plugins.eslint.failAfterError());
 });
 
 // Image minifying task.
 gulp.task('imagemin', () => {
-  return gulp.src(cwd + '/src/assets/img/**/*.{png,gif,jpg}')
+
+  const location = getLocation(argv);
+  const sources = getSrc('./wp-content/%location%/src/assets/img/**/*.{png,gif,jpg}', location)
+
+  return gulp.src(sources, {base: './'})
     .pipe(plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
-    .pipe(gulp.dest(cwd + '/assets/img'));
+    .pipe(plugins.rename((path) => {
+      path.dirname = path.dirname.replace('src/assets', 'assets');
+    }))
+    .pipe(gulp.dest('./'));
 });
 
 // SVG minifying task.
 gulp.task('svgmin', () => {
-  return gulp.src(cwd + '/src/assets/svg/**/*.svg')
+
+  const location = getLocation(argv);
+  const sources = getSrc('./wp-content/%location%/src/assets/svg/**/*.svg', location);
+
+  return gulp.src(sources, {base: './'})
     .pipe(plugins.svgmin())
-    .pipe(gulp.dest(cwd + '/assets/svg'));
+    .pipe(plugins.rename((path) => {
+      path.dirname = path.dirname.replace('src/assets', 'assets');
+    }))
+    .pipe(gulp.dest('./'));
 });
 
-gulp.task('default', ['styles', 'lint'], (done) => {
+gulp.task('default', ['styles', 'scripts'], (done) => {
   plugins.livereload.listen();
 
-  // Styles
-  gulp.watch('./wp-content/**/*.sass', ['styles']);
-  gulp.watch([
-    cwd + '/src/js/**/*.js',
-    './wp-content/**/*.css'
-  ], plugins.livereload.changed)
+  const location = getLocation(argv);
+  const sassSources = getSrc('./wp-content/%location%/src/sass/**/*.sass', location);
+  const cssSources = getSrc('./wp-content/%location%/**/*.css', location);
+  const jsSources = getSrc('./wp-content/%location%/src/js/**.js', location);
 
-  runScripts(null, (b) => {
-    if (b) {
-      var w = watchify(b);
-      w.on('update', () => bundle(w));
-      bundle(w);
-    }
+  // Styles
+  gulp.watch(sassSources, ['styles']);
+
+  const jsWatch = gulp.watch(jsSources, (event) => {
+    const path = event.path.split('wp-content').pop();
+
+    runSequence('lint', () => {
+      runScripts('./wp-content' + path);
+    });
   });
+
+  gulp.watch(cssSources.concat(getSrc('./wp-content/%location%/js/*.bundle.js', location)), plugins.livereload.changed);
 });
 
 gulp.task('build', done => {
-  runSequence('styles', 'lint', 'scripts:prod', ['imagemin', 'svgmin'], done);
-});
-
-gulp.task('build:all', ['styles'], done => {
-
-  // Runs through all the paths listed in the chdirs object and executes
-  // the build process for them.
-
-  let paths = Object.keys(chdirs).map((key) => chdirs[key]);
-
-  function runBuild(path) {
-
-    console.log('');
-    console.log('');
-    plugins.util.log(plugins.util.colors.green('Running build for: ') + path);
-
-    return Q.Promise(function(resolve, reject) {
-      cwd = path;
-
-      runSequence('lint', 'scripts:prod', ['imagemin', 'svgmin'], function() {
-        console.log('');
-        resolve();
-      });
-    });
-  }
-
-  let result = Q();
-  paths.forEach(path => {
-    result = result.then(runBuild.bind(null, path));
-  });
-  return result;
-
+  ENV = (argv.dev || argv.d) ? 'development' : 'production';
+  runSequence(['styles', 'scripts'], ['imagemin', 'svgmin'], done);
 });
