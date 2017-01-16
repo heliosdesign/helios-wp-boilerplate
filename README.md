@@ -10,9 +10,9 @@ A quick starting point for WordPress themes built from scratch.
 1. Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`
 2. Jump into the directory and delete the `.git` directory (unless you want to work on this boilerplate). You can now create a new repo if you want to.
 3. Download WordPress from [wordpress.org](https://wordpress.org).
-4. Add all the WordPress files &mdash; except for the `wp-content` directory &mdash; to the root of the project. Add any of the plugins or themes that you want to their respective directories in `wp-content`.
+4. Add all the WordPress files **&mdash; except for the `wp-content` directory &mdash;** to the root of the project. Add any of the plugins or themes that you want to their respective directories in `wp-content`.
 5. Run `$ npm install` to get the tooling dependencies.
-6. If you change the name of your theme, child theme or base plugin (as you should), make sure you adjust the appropriate path in the `chdirs` object at the top of `gulpfile.js`.
+6. If you change the name of your theme, child theme or base plugin (as you should), make sure you adjust `gulpconfig.js`.
 7. Change the meta information at the top of `src/sass/global/_template-header.sass` in the theme directory.
 8. Run `$ gulp` to recompile the CSS with the new template information and to make sure Gulp is running without errors.
 9. Create your database and run the WordPress install by navigating to the URL and following the directions.
@@ -20,7 +20,7 @@ A quick starting point for WordPress themes built from scratch.
 
 ## Additional Configuration
 
-*Note: This secton is moot right now. The only thing we were using the `DEV_ENV` flag for was unminified JavaScripts. Right now we're compiling to the same file (`bundle.min.js`). Just use `gulp build` before you deploy to make sure the JS is minified.*
+*Note: This secton is moot right now. The only thing we were using the `DEV_ENV` flag for was unminified JavaScripts. Right now we're compiling to the same file (`file.bundle.js`). Just use `gulp build` before you deploy to make sure the JS is minified.*
 
 We're using an extra bit of trickery to load in asset files depending on the environment. The enqueueing function (found in `base-theme/inc/functions/enqueue-functions.php`) looks to see if a `DEV_ENV` flag is set to `true`. If so, it spits out all the individual, non-minified  files defined in that block. As such, open the `/wp-config.php` file and add `define('DEV_ENV', true);` after the `WP_DEBUG` line close to bottom of the file.
 
