@@ -1,4 +1,6 @@
 
+module.exports.basetheme = 'base-theme';
+
 module.exports.themes = [
   'base-theme',
   'child-theme'

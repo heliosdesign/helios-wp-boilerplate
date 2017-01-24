@@ -128,13 +128,17 @@ function runScripts(sources, env) {
 gulp.task('styles', function() {
 
   const location = getLocation(argv);
+  const baseTheme = config.basetheme || config.themes[0];
   const sources = getSrc('./wp-content/%location%/src/sass/**/*.sass', location);
 
   return gulp.src(sources, {base: './'})
     .pipe(plugins.sass({
       outputStyle: ENV === 'production' ? 'compressed' : 'nested',
       sourceComments: ENV !== 'production',
-      indentedSyntax: true
+      indentedSyntax: true,
+      includePaths: [
+        './wp-content/themes/' + baseTheme + '/src/sass'
+      ]
     }).on('error', swallowError))
     .pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
     .pipe(plugins.rename((path) => {
