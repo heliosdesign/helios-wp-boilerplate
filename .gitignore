@@ -16,20 +16,20 @@ error_log
 # dev/
 # tests/
 
-wp-admin/
-wp-includes/
+# wp-admin/
+# wp-includes/
 wp-content/*.*
 wp-content/*/*.*
 wp-content/*/*/
 
 
 # Exceptions from the rules above
-!.gitignore
-!.eslintrc
-!gulpfile.js
-!gulpconfig.js
-!package.json
-!README.md
+# !.gitignore
+# !.eslintrc
+# !gulpfile.js
+# !gulpconfig.js
+# !package.json
+# !README.md
 !wp-content/db.php
 !wp-content/themes/index.php
 !wp-content/themes/base-theme/
