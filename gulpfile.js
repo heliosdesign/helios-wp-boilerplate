@@ -12,7 +12,7 @@ const argv            = require('yargs').argv;
 
 const source          = require('vinyl-source-stream');
 const buffer          = require('vinyl-buffer');
-const watchify        = require('watchify');
+// const watchify        = require('watchify');
 const browserify      = require('browserify');
 const babel           = require('babelify');
 const es              = require('event-stream');
@@ -90,7 +90,6 @@ function bundle(entry, env) {
     .pipe(buffer())
     .pipe(plugins.if(env === 'production', plugins.uglify()))
     .pipe(plugins.rename((path) => {
-      // path.dirname += '/js';
       path.dirname = path.dirname.replace('src/js', 'js');
       path.extname = '.bundle.js';
     }))
