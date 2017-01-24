@@ -3,26 +3,24 @@
 *.DS_Store
 *.git
 *.gitmodules
+
+_source
 node_modules/
 error_log
-/*.*
 .sass-cache
-_source
-deploy/
-dist/
-dev/
-tests/
+
+# /*.*
+
+# deploy/
+# dist/
+# dev/
+# tests/
 
 wp-admin/
 wp-includes/
 wp-content/*.*
 wp-content/*/*.*
 wp-content/*/*/
-# wp-content/uploads/
-# wp-content/themes/*.*
-# wp-content/themes/*/
-# wp-content/plugins/*.*
-# wp-content/plugins/*/
 
 
 # Exceptions from the rules above
