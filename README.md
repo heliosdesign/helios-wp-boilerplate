@@ -24,14 +24,14 @@ Current WordPress Version: `4.7.1`
 
 ## Additional Configuration
 
-*Note: This secton is moot right now. The only thing we were using the `DEV_ENV` flag for was unminified JavaScripts. Right now we're compiling to the same file (`file.bundle.js`). Just use `gulp build` before you deploy to make sure the JS is minified.*
+*Note: This secton is moot at the moment. The only thing we were using the `DEV_ENV` flag for was unminified JavaScripts. Right now we're compiling to the same file (`file.bundle.js`). Just use `gulp build` before you deploy to make sure the JS is minified.*
 
 We're using an extra bit of trickery to load in asset files depending on the environment. The enqueueing function (found in `base-theme/inc/functions/enqueue-functions.php`) looks to see if a `DEV_ENV` flag is set to `true`. If so, it spits out all the individual, non-minified  files defined in that block. As such, open the `/wp-config.php` file and add `define('DEV_ENV', true);` after the `WP_DEBUG` line close to bottom of the file.
 
 
 ## Before You Begin
 
-There are some more things you may want to tweak/configure/delete.
+There are some more things you will want to tweak/configure/delete.
 
 ### Template Information
 
