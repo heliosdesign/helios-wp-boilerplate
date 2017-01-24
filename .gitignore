@@ -18,9 +18,11 @@ error_log
 
 # wp-admin/
 # wp-includes/
-wp-content/*.*
-wp-content/*/*.*
-wp-content/*/*/
+# wp-content/*.*
+# wp-content/*/*.*
+# wp-content/*/*/
+
+wp-content/uploads
 
 
 # Exceptions from the rules above
@@ -30,9 +32,9 @@ wp-content/*/*/
 # !gulpconfig.js
 # !package.json
 # !README.md
-!wp-content/db.php
-!wp-content/themes/index.php
-!wp-content/themes/base-theme/
-!wp-content/themes/child-theme/
-!wp-content/plugins/index.php
-!wp-content/plugins/base-plugin/
+# !wp-content/db.php
+# !wp-content/themes/index.php
+# !wp-content/themes/base-theme/
+# !wp-content/themes/child-theme/
+# !wp-content/plugins/index.php
+# !wp-content/plugins/base-plugin/
