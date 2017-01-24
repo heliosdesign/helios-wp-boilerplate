@@ -1,8 +1,12 @@
 # Helios's WordPress Boilerplate
 
-A quick starting point for WordPress themes built from scratch.
+A quick starting point for WordPress projects.
 
 **Note:** This theme has been refactored to include the entire directory structure.
+
+**Note:** This boilerplate has been refactord *again* to include WordPress core.
+
+Current WordPress Version: `4.7.1`
 
 
 ## Getting Started (Local)
