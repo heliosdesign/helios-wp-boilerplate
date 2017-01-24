@@ -3,38 +3,39 @@
 *.DS_Store
 *.git
 *.gitmodules
+
+_source
 node_modules/
 error_log
-/*.*
 .sass-cache
-_source
-deploy/
-dist/
-dev/
-tests/
 
-wp-admin/
-wp-includes/
-wp-content/*.*
-wp-content/*/*.*
-wp-content/*/*/
-# wp-content/uploads/
-# wp-content/themes/*.*
-# wp-content/themes/*/
-# wp-content/plugins/*.*
-# wp-content/plugins/*/
+# /*.*
+
+# deploy/
+# dist/
+# dev/
+# tests/
+
+# wp-admin/
+# wp-includes/
+# wp-content/*.*
+# wp-content/*/*.*
+# wp-content/*/*/
+
+wp-config.php
+wp-content/uploads
 
 
 # Exceptions from the rules above
-!.gitignore
-!.eslintrc
-!gulpfile.js
-!gulpconfig.js
-!package.json
-!README.md
-!wp-content/db.php
-!wp-content/themes/index.php
-!wp-content/themes/base-theme/
-!wp-content/themes/child-theme/
-!wp-content/plugins/index.php
-!wp-content/plugins/base-plugin/
+# !.gitignore
+# !.eslintrc
+# !gulpfile.js
+# !gulpconfig.js
+# !package.json
+# !README.md
+# !wp-content/db.php
+# !wp-content/themes/index.php
+# !wp-content/themes/base-theme/
+# !wp-content/themes/child-theme/
+# !wp-content/plugins/index.php
+# !wp-content/plugins/base-plugin/
