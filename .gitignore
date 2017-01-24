@@ -22,6 +22,7 @@ error_log
 # wp-content/*/*.*
 # wp-content/*/*/
 
+wp-config.php
 wp-content/uploads
 
 
