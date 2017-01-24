@@ -15,7 +15,8 @@ if ( ! function_exists( 'helios_scripts' ) ) :
     // if ( DEV_ENV === true ) {
     //   wp_enqueue_script( 'example-script', get_template_directory_uri() . '/js/bundle.js', array( 'jquery' ), null, true );
     // } else {
-      wp_enqueue_script( 'application-script', get_template_directory_uri() . '/js/main.bundle.js', array('jquery'), $cache_buster, true );
+      wp_enqueue_script( 'main-script', get_template_directory_uri() . '/js/main.bundle.js', array('jquery'), $cache_buster, true );
+      wp_enqueue_script( 'secondary-script', get_template_directory_uri() . '/js/secondary.bundle.js', array('jquery'), $cache_buster, true );
     // }
       
   }

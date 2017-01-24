@@ -13,13 +13,35 @@
  * variables in the base-theme.
  */
 /**
- * Now pull in all the styles from the base theme, but
- * with changes in any of the variables we have
- * redefined in global/variables.
+ * Child Theme Variables
+ *
+ * Make sure NOT to use the !default flag so that parent
+ * theme variables will be overridden.
+ */
+/**
+ * Colors
+ */
+/**
+ * Now pull in everything from the includes file in
+ * the base theme, but with changes in any of the variables
+ * we have redefined in global/variables.
+ *
+ * We can get includes from the parent theme because we
+ * defined it as an includePath in gulp based on 'basetheme'
+ * in the gulpconfig.js file.
+ */
+/**
+ * Parent Theme Variables
+ *
+ * Make sure to use the !default flag so that child
+ * themes can override these settings.
+ */
+/**
+ * Colours
  */
 /* =Reset */
 /* -------------------------------------------------------------- */
-/* line 4, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 4, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -37,18 +59,18 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   padding: 0;
   vertical-align: baseline; }
 
-/* line 21, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 21, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 html {
   font-size: 62.5%;
   overflow-y: scroll;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%; }
 
-/* line 27, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 27, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 body {
   background: #fff; }
 
-/* line 30, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 30, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 article,
 aside,
 details,
@@ -60,45 +82,45 @@ nav,
 section {
   display: block; }
 
-/* line 41, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 41, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 ol, ul {
   list-style: none; }
 
-/* line 44, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 44, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 table {
   border-collapse: separate;
   border-spacing: 0; }
 
-/* line 48, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 48, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 caption, th, td {
   font-weight: normal;
   text-align: left; }
 
-/* line 52, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 52, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 blockquote:before, blockquote:after,
 q:before, q:after {
   content: ""; }
 
-/* line 56, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 56, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 blockquote, q {
   quotes: "" ""; }
 
-/* line 59, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 59, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 a:focus {
   outline: thin dotted; }
 
-/* line 62, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 62, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 a:hover,
 a:active {
   outline: 0; }
 
-/* line 66, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 66, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 a img {
   border: 0; }
 
 /* =Global */
 /* ----------------------------------------------- */
-/* line 74, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 74, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 body,
 button,
 input,
@@ -111,11 +133,11 @@ textarea {
   line-height: 1.5; }
 
 /* Headings */
-/* line 87, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 87, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 h1, h2, h3, h4, h5, h6 {
   clear: both; }
 
-/* line 90, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 90, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 hr {
   background-color: #ccc;
   border: 0;
@@ -123,53 +145,53 @@ hr {
   margin-bottom: 1.5em; }
 
 /* Text elements */
-/* line 98, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 98, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 p {
   margin-bottom: 1.5em; }
 
-/* line 101, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 101, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 ul, ol {
   margin: 0 0 1.5em 3em; }
 
-/* line 104, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 104, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 ul {
   list-style: disc; }
 
-/* line 107, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 107, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 ol {
   list-style: decimal; }
 
-/* line 110, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 110, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 li > ul,
 li > ol {
   margin-bottom: 0;
   margin-left: 1.5em; }
 
-/* line 115, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 115, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 dt {
   font-weight: bold; }
 
-/* line 118, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 118, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 dd {
   margin: 0 1.5em 1.5em; }
 
-/* line 121, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 121, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 b, strong {
   font-weight: bold; }
 
-/* line 124, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 124, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 dfn, cite, em, i {
   font-style: italic; }
 
-/* line 127, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 127, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 blockquote {
   margin: 0 1.5em; }
 
-/* line 130, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 130, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 address {
   margin: 0 0 1.5em; }
 
-/* line 133, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 133, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 pre {
   background: #eee;
   font-family: "Courier 10 Pitch", Courier, monospace;
@@ -181,21 +203,21 @@ pre {
   overflow: auto;
   max-width: 100%; }
 
-/* line 144, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 144, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 code, kbd, tt, var {
   font: 15px Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace; }
 
-/* line 147, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 147, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 abbr, acronym {
   border-bottom: 1px dotted #666;
   cursor: help; }
 
-/* line 151, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 151, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 mark, ins {
   background: #fff9c0;
   text-decoration: none; }
 
-/* line 155, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 155, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 sup,
 sub {
   font-size: 75%;
@@ -204,41 +226,41 @@ sub {
   position: relative;
   vertical-align: baseline; }
 
-/* line 163, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 163, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 sup {
   bottom: 1ex; }
 
-/* line 166, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 166, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 sub {
   top: .5ex; }
 
-/* line 169, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 169, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 small {
   font-size: 75%; }
 
-/* line 172, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 172, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 big {
   font-size: 125%; }
 
-/* line 175, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 175, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 figure {
   margin: 0; }
 
-/* line 178, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 178, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 table {
   margin: 0 0 1.5em;
   width: 100%; }
 
-/* line 182, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 182, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 th {
   font-weight: bold; }
 
-/* line 185, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 185, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 img {
   height: auto;
   max-width: 100%; }
 
-/* line 189, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 189, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 button,
 input,
 select,
@@ -248,12 +270,12 @@ textarea {
   vertical-align: baseline;
   *vertical-align: middle; }
 
-/* line 198, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 198, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 button,
 input {
   line-height: normal; }
 
-/* line 202, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 202, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 button,
 html input[type="button"],
 input[type="reset"],
@@ -269,7 +291,7 @@ input[type="submit"] {
   padding: .6em 1em .4em;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8); }
 
-/* line 238, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 238, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 input[type="checkbox"],
 input[type="radio"] {
   -webkit-box-sizing: border-box;
@@ -277,24 +299,24 @@ input[type="radio"] {
   box-sizing: border-box;
   padding: 0; }
 
-/* line 243, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 243, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 input[type="search"] {
   -webkit-appearance: textfield;
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box; }
 
-/* line 249, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 249, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none; }
 
-/* line 252, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 252, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 button::-moz-focus-inner,
 input::-moz-focus-inner {
   border: 0;
   padding: 0; }
 
-/* line 257, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 257, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -304,7 +326,7 @@ textarea {
   border: 1px solid #ccc;
   border-radius: 3px; }
 
-/* line 266, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 266, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
@@ -312,14 +334,14 @@ input[type="search"]:focus,
 textarea:focus {
   color: #111; }
 
-/* line 273, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 273, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="search"] {
   padding: 3px; }
 
-/* line 279, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 279, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 textarea {
   overflow: auto;
   padding-left: 3px;
@@ -327,40 +349,40 @@ textarea {
   width: 98%; }
 
 /* Alignment */
-/* line 287, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 287, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .alignleft {
   display: inline;
   float: left;
   margin-right: 1.5em; }
   @media (max-width: 500px) {
-    /* line 287, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+    /* line 287, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
     .alignleft {
       max-width: 50%; } }
 
-/* line 296, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 296, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .alignright {
   display: inline;
   float: right;
   margin-left: 1.5em; }
   @media (max-width: 500px) {
-    /* line 302, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+    /* line 302, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
     .alignright img {
       max-width: 50%; } }
 
-/* line 307, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 307, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .aligncenter {
   clear: both;
   display: block;
   margin: 0 auto; }
 
 /* Text meant only for screen readers */
-/* line 314, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 314, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .screen-reader-text {
   clip: rect(1px 1px 1px 1px);
   clip: rect(1px, 1px, 1px, 1px);
   position: absolute !important; }
 
-/* line 320, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 320, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .screen-reader-text:hover,
 .screen-reader-text:active,
 .screen-reader-text:focus {
@@ -383,7 +405,7 @@ textarea {
   z-index: 100000; }
 
 /* Clearing */
-/* line 342, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 342, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .clear:before,
 .clear:after,
 [class*="content"]:before,
@@ -393,7 +415,7 @@ textarea {
   content: '';
   display: table; }
 
-/* line 352, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 352, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .clear:after,
 [class*="content"]:after,
 [class*="site"]:after {
@@ -401,39 +423,39 @@ textarea {
 
 /* =Content */
 /* ----------------------------------------------- */
-/* line 360, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 360, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .hentry {
   margin: 0 0 1.5em; }
 
-/* line 363, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 363, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .byline {
   display: none; }
 
-/* line 366, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 366, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .single .byline,
 .group-blog .byline {
   display: inline; }
 
-/* line 370, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 370, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .entry-content,
 .entry-summary {
   margin: 1.5em 0 0; }
 
-/* line 374, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 374, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .page-links {
   clear: both;
   margin: 0 0 1.5em; }
 
 /* =Asides */
 /* ----------------------------------------------- */
-/* line 383, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 383, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .blog .format-aside .entry-title,
 .archive .format-aside .entry-title {
   display: none; }
 
 /* =Media */
 /* ----------------------------------------------- */
-/* line 392, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 392, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .entry-content img.wp-smiley,
 .comment-content img.wp-smiley {
   border: none;
@@ -441,42 +463,42 @@ textarea {
   margin-top: 0;
   padding: 0; }
 
-/* line 399, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 399, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .wp-caption {
   border: 1px solid #ccc;
   margin-bottom: 1.5em;
   max-width: 100%; }
 
-/* line 404, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 404, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .wp-caption img[class*="wp-image-"] {
   display: block;
   margin: 1.2% auto 0;
   max-width: 98%; }
 
-/* line 409, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 409, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .wp-caption-text {
   text-align: center; }
 
-/* line 412, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 412, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .wp-caption .wp-caption-text {
   margin: 0.8075em 0; }
 
-/* line 415, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 415, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .site-content .gallery {
   margin-bottom: 1.5em; }
 
-/* line 418, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 418, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .site-content .gallery a img {
   border: none;
   height: auto;
   max-width: 90%; }
 
-/* line 423, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 423, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .site-content .gallery dd {
   margin: 0; }
 
 /* Make sure embeds and iframes fit their containers */
-/* line 428, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 428, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 embed,
 iframe,
 object {
@@ -484,17 +506,17 @@ object {
 
 /* =Navigation */
 /* ----------------------------------------------- */
-/* line 438, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 438, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .site-content [class*="navigation"] {
   margin: 0 0 1.5em;
   overflow: hidden; }
 
-/* line 442, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 442, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 [class*="navigation"] .nav-previous {
   float: left;
   width: 50%; }
 
-/* line 446, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 446, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 [class*="navigation"] .nav-next {
   float: right;
   text-align: right;
@@ -502,52 +524,56 @@ object {
 
 /* =Comments */
 /* ----------------------------------------------- */
-/* line 455, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 455, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .comment-content a {
   word-wrap: break-word; }
 
 /* =Widgets */
 /* ----------------------------------------------- */
 /* Make sure select elements fit in widgets */
-/* line 462, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 462, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .widget select {
   max-width: 100%; }
 
 /* Search widget */
-/* line 467, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 467, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .widget_search .submit {
   display: none; }
 
 /* =Infinite Scroll */
 /* ----------------------------------------------- */
 /* Globally hidden elements when Infinite Scroll is supported and in use. */
-/* line 475, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 475, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .infinite-scroll .navigation-paging,
 .infinite-scroll.neverending .site-footer {
   display: none; }
 
 /* When Infinite Scroll has reached its end we need to re-display elements that were hidden (via .neverending) before */
-/* line 481, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/vendor/_wp-styles.sass */
+/* line 481, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/global/_wp-styles.sass */
 .infinity-end.neverending .site-footer {
   display: block; }
 
 /* =HTML */
 /*-----------------------------------------------------------*/
 /* line 4, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/partials/_base.sass */
+body {
+  background: #ffedd1; }
+
+/* line 7, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/partials/_base.sass */
 ::-moz-selection {
   background: #b3d4fc;
   text-shadow: none; }
 
-/* line 8, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/partials/_base.sass */
+/* line 11, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/partials/_base.sass */
 ::selection {
   background: #b3d4fc;
   text-shadow: none; }
 
-/* line 13, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/partials/_base.sass */
+/* line 16, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/partials/_base.sass */
 img {
   vertical-align: middle; }
 
-/* line 17, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/partials/_base.sass */
+/* line 20, /Users/dansundy/projects/helios-wp-boilerplate/wp-content/themes/base-theme/src/sass/partials/_base.sass */
 textarea {
   resize: vertical; }
 
@@ -606,5 +632,7 @@ textarea {
     page-break-after: avoid; } }
 
 /**
- * And finally, any more overrides can go here.
+ * And finally, any more overrides can go here. For example,
+ * you may want extra partials, etc. for an individual
+ * child theme.
  */

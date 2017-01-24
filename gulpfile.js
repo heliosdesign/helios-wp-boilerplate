@@ -25,6 +25,7 @@ if (argv.development || argv.dev || argv.d) {
   ENV = 'development';
 }
 
+
 /**
  * Functions
  */
@@ -33,6 +34,20 @@ function swallowError(error) {
   console.log(error.toString());
   this.emit('end');
 };
+
+function getBaseTheme(config) {
+  return config.basetheme || config.themes[0];
+}
+
+function getLocation(argv) {
+  if (argv.plugin) {
+    return typeof argv.plugin === 'string' ? `plugins/${argv.plugin}` : 'plugins';
+  } else if (argv.theme) {
+    return typeof argv.theme === 'string' ? `themes/${argv.theme}` : 'themes';
+  } else {
+    return null;
+  }
+}
 
 function getSrc(matcher, location) {
 
@@ -62,15 +77,17 @@ function getSrc(matcher, location) {
   return src;
 }
 
-function getLocation(argv) {
+function getSassSrc(argv, baseTheme) {
+  const location = getLocation(argv);
+  let sources = getSrc('./wp-content/%location%/src/sass/**/*.sass', location);
 
-  if (argv.plugin) {
-    return typeof argv.plugin === 'string' ? `plugins/${argv.plugin}` : 'plugins';
-  } else if (argv.theme) {
-    return typeof argv.theme === 'string' ? `themes/${argv.theme}` : 'themes';
-  } else {
-    return null;
+  // If we're running a child theme, make sure the parent
+  // theme is included as well!
+  if (typeof argv.theme === 'string' && argv.theme !== baseTheme) {
+    sources.push('./wp-content/themes/' + baseTheme + '/src/sass/**/*.sass');
   }
+
+  return sources;
 }
 
 
@@ -99,14 +116,14 @@ function bundle(entry, env) {
 function getScriptsArr(src) {
   return Q.Promise((resolve, reject) => {
     if (!src) {
-      reject(new Error('No path provided.'));
+      reject(new Error('No JS paths provided.'));
     }
 
     glob(src, (err, files) => {
       if (err) {
         reject(err);
       } else if (!files.length) {
-        reject(new Error('No files found.'));
+        reject(new Error('No JS files to compile.'));
       } else {
         resolve(files);
       }
@@ -118,34 +135,48 @@ function runScripts(sources, env) {
   getScriptsArr(sources)
     .then(files => files.map((entry) => bundle(entry, env)))
     .then(tasks => es.merge.apply(null, tasks))
-    .catch(err => console.log(err));
+    .catch(err => plugins.util.log(plugins.util.colors.yellow(err)));
 }
 
-/**
- * Tasks
- */
-// SASS compiling task.
-gulp.task('styles', function() {
+function runStyles(sources, env, includePaths) {
 
-  const location = getLocation(argv);
-  const baseTheme = config.basetheme || config.themes[0];
-  const sources = getSrc('./wp-content/%location%/src/sass/**/*.sass', location);
+  let sassOpts = {
+    outputStyle: env === 'production' ? 'compressed' : 'nested',
+    sourceComments: env !== 'production',
+    indentedSyntax: true
+  };
+
+  if (includePaths) {
+    sassOpts.includePaths = includePaths;
+  }
 
   return gulp.src(sources, {base: './'})
-    .pipe(plugins.sass({
-      outputStyle: ENV === 'production' ? 'compressed' : 'nested',
-      sourceComments: ENV !== 'production',
-      indentedSyntax: true,
-      includePaths: [
-        './wp-content/themes/' + baseTheme + '/src/sass'
-      ]
-    }).on('error', swallowError))
+    .pipe(plugins.sass(sassOpts).on('error', swallowError))
     .pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
     .pipe(plugins.rename((path) => {
       const repl = path.basename === 'style' ? '' : 'css';
       path.dirname = path.dirname.replace('src/sass', repl);
     }))
     .pipe(gulp.dest('./'));
+}
+
+/**
+ * Tasks
+ */
+// SASS compiling task.
+
+
+gulp.task('styles', function() {
+
+  // const location = getLocation(argv);
+  const baseTheme = getBaseTheme(config);
+  const sources = getSassSrc(argv, baseTheme);
+
+  // The third parameter is an include path. You can include any
+  // sass file relatively at any time. This is mainly for
+  // child theme styling purposes.
+  runStyles(sources, ENV, ['./wp-content/themes/' + baseTheme + '/src/sass']);
+  
 });
 
 
@@ -197,28 +228,32 @@ gulp.task('svgmin', () => {
 });
 
 gulp.task('default', ['styles', 'scripts'], (done) => {
+
   plugins.livereload.listen();
 
   const location = getLocation(argv);
-  const sassSources = getSrc('./wp-content/%location%/src/sass/**/*.sass', location);
+  const baseTheme = getBaseTheme(config);
+  const sassSources = getSassSrc(argv, baseTheme);
   const cssSources = getSrc('./wp-content/%location%/**/*.css', location);
-  const jsSources = getSrc('./wp-content/%location%/src/js/**.js', location);
+  const jsSources = getSrc('./wp-content/%location%/src/js/**/*.js', location);
+
+  // If we're running a child theme only make sure the parent
+  // theme is included as well!
+  if (argv.theme && argv.theme !== baseTheme) {
+    sassSources.push('./wp-content/themes/' + baseTheme + '/src/sass/**/*.sass');
+  }
 
   // Styles
   gulp.watch(sassSources, ['styles']);
 
-  const jsWatch = gulp.watch(jsSources, (event) => {
-    const path = event.path.split('wp-content').pop();
+  // Scripts
+  gulp.watch(jsSources, ['scripts']);
 
-    runSequence('lint', () => {
-      runScripts('./wp-content' + path);
-    });
-  });
-
+  // If any css or .bundle javascript file changes, reload.
   gulp.watch(cssSources.concat(getSrc('./wp-content/%location%/js/*.bundle.js', location)), plugins.livereload.changed);
 });
 
-gulp.task('build', done => {
+gulp.task('build', ['info'], done => {
   ENV = (argv.dev || argv.d) ? 'development' : 'production';
   runSequence(['styles', 'scripts'], ['imagemin', 'svgmin'], done);
 });
