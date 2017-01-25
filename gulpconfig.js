@@ -9,7 +9,7 @@
 // The theme that most of the styles are pulled from.
 // This will either be the parent theme if you are using
 // a child theme or the single theme that you are using.
-module.exports.basetheme = 'base-theme';
+module.exports.baseTheme = 'base-theme';
 
 // A list of themes under development.
 module.exports.themes = [
