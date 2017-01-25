@@ -16,13 +16,19 @@ const browserify      = require('browserify');
 const babel           = require('babelify');
 const es              = require('event-stream');
 
+
+/**
+ * Constants
+ */
 const config = require('./gulpconfig');
 
+// ENV can be re-set in tasks.
 let ENV = (argv.production || argv.prod || argv.p) ? 'production' : 'development';
 
-// if (argv.development || argv.dev || argv.d) {
-//   ENV = 'development';
-// }
+const BASE_DIR = config.baseDir;
+const WATCH_DIRS = config.watchDirs;
+const DEV_DIRS = config.devDirs;
+const BASE_THEME = config.baseTheme;
 
 
 /**
@@ -50,9 +56,9 @@ function getLocation(opts) {
 //
 // @param pattern   [string]  The suffix - where to look in the specified directory.
 // @param location  [string]  The content directory. eg 'themes/base-theme'.
-// @param base      [string]  Optional. The root directory. Defaults to config.rootDir.
+// @param base      [string]  Optional. The root directory. Defaults to BASE_DIR.
 function setPath(pattern, location, base) {
-  return `${base || config.rootDir}/${location}/${pattern}`;
+  return `${base || BASE_DIR}/${location}/${pattern}`;
 }
 
 // Get an array of sources based on config options and flags.
@@ -63,25 +69,25 @@ function getSrc(pattern, opts) {
 
   const location = getLocation(opts || argv);
 
-  if (location && config.watchDirs.indexOf(location) === -1) {
+  if (location && WATCH_DIRS.indexOf(location) === -1) {
     return [setPath(pattern, location)];
   } else {
-    return config.watchDirs
+    return WATCH_DIRS
       .filter((d) => !location || d === location)
-      .map((dir) => config[dir].map((name) => setPath(pattern, `${dir}/${name}`)))
+      .map((dir) => DEV_DIRS[dir].map((name) => setPath(pattern, `${dir}/${name}`)))
       .reduce((a, b) => a.concat(b), []);
   }
 
 }
 
 // Helper to make sure parent themes are included when child-theme flags are specified.
-function getSassSrc(argv) {
+function getSassSrc(argv, baseTheme) {
 
   const sources = getSrc('src/sass/**/*.sass');
 
   // If we're running a child theme, make sure the parent theme is included as well!
-  if (typeof argv.theme === 'string' && argv.theme !== config.baseTheme) {
-    return sources.concat(getSrc('src/sass/**/*.sass', {theme: config.baseTheme}));
+  if (typeof argv.theme === 'string' && argv.theme !== baseTheme) {
+    return sources.concat(getSrc('src/sass/**/*.sass', {theme: baseTheme}));
   } else {
     return sources;
   }
@@ -173,12 +179,12 @@ function runStyles(sources, env, includePaths) {
 // SASS compiling task.
 gulp.task('styles', function() {
 
-  const sources = getSassSrc(argv);
+  const sources = getSassSrc(argv, BASE_THEME);
 
   // The third parameter is an include path. You can include any
   // sass file relatively at any time. This is mainly for
   // child theme styling purposes.
-  const includePath = getSrc('src/sass', {theme: config.baseTheme});
+  const includePath = getSrc('src/sass', {theme: BASE_THEME});
 
   runStyles(sources, ENV, includePath);
   
@@ -233,9 +239,10 @@ gulp.task('default', ['styles', 'scripts'], (done) => {
 
   plugins.livereload.listen();
 
-  const sassSources = getSassSrc(argv);
+  const sassSources = getSassSrc(argv, BASE_THEME);
   const cssSources = getSrc('**/*.css');
   const jsSources = getSrc('src/js/**/*.js');
+  const compiledSources = cssSources.concat(getSrc('js/*.bundle.js'));
 
   // Styles
   gulp.watch(sassSources, ['styles']);
@@ -244,7 +251,7 @@ gulp.task('default', ['styles', 'scripts'], (done) => {
   gulp.watch(jsSources, ['scripts']);
 
   // If any css or .bundle javascript file changes, reload.
-  gulp.watch(cssSources.concat(getSrc('js/*.bundle.js')), plugins.livereload.changed);
+  gulp.watch(compiledSources, plugins.livereload.changed);
 });
 
 

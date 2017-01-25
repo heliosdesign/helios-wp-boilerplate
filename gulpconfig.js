@@ -11,20 +11,19 @@
 // a child theme or the single theme that you are using.
 module.exports.baseTheme = 'base-theme';
 
-// A list of themes under development.
-module.exports.themes = [
-  'base-theme',
-  'child-theme'
-];
-
-// A list of plugins under development.
-module.exports.plugins = [
-  'base-plugin'
-];
+module.exports.devDirs = {
+  plugins: [
+    'base-plugin'
+  ],
+  themes: [
+    'base-theme',
+    'child-theme'
+  ]
+};
 
 // The root directory where the themes and plugin folders
 // are found. This will likely not need to be changed.
-module.exports.rootDir = './wp-content';
+module.exports.baseDir = './wp-content';
 
 // Directories in the rootDir that will be watched by Gulp.
 // This will probably not be changed. 
@@ -32,9 +31,10 @@ module.exports.rootDir = './wp-content';
 // If you do want to add another directory for whatever reason 
 // you will need to also create a correlating whitelist. 
 // E.g. If you want to watch the directory ./wp-content/uploads 
-// you'll have to add module.exports.uploads and whitelist the 
-// directoies that should be watched.
+// you'll have to add uploads: ['whatever-dir', 'another-dir'] 
+// to the devDirs object.
 module.exports.watchDirs = [
   'plugins',
   'themes'
 ];
+
