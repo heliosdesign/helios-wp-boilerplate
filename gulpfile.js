@@ -163,12 +163,10 @@ function runStyles(sources, env, includePaths) {
 /**
  * Tasks
  */
+
 // SASS compiling task.
-
-
 gulp.task('styles', function() {
 
-  // const location = getLocation(argv);
   const baseTheme = getBaseTheme(config);
   const sources = getSassSrc(argv, baseTheme);
 
@@ -179,9 +177,8 @@ gulp.task('styles', function() {
   
 });
 
-
+// JavaScript compiling task.
 gulp.task('scripts', ['lint'], () => {
-
   const location = getLocation(argv);
   const sources = getSrc('./wp-content/%location%/src/js/**.js', location);
 
