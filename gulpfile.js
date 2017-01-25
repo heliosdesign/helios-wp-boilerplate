@@ -49,32 +49,20 @@ function getLocation(argv) {
   }
 }
 
+function setPath(matcher, replacer) {
+  return matcher.replace('%location%', replacer);
+}
+
 function getSrc(matcher, location) {
 
-  let src = [];
-
-  if (location) {
-
-    if (location === 'plugins' || location === 'themes') {
-      config[location].forEach((name) => {
-        src.push(matcher.replace('%location%', `${location}/${name}`))
-      });
-    } else {
-      src.push(matcher.replace('%location%', location));
-    }
-    
-  } else {
-
-    config.themes.forEach((name) => {
-      src.push(matcher.replace('%location%', `themes/${name}`))
-    });
-
-    config.plugins.forEach((name) => {
-      src.push(matcher.replace('%location%', `plugins/${name}`));
-    });
+  if (location && config.watchDirs.indexOf(location) === -1) {
+    return [setPath(matcher, location)];
   }
 
-  return src;
+  return config.watchDirs
+    .filter((d) => !location || d === location)
+    .map((dir) => config[dir].map((name) => setPath(matcher, `${dir}/${name}`)))
+    .reduce((a, b) => a.concat(b), []);
 }
 
 function getSassSrc(argv, baseTheme) {
@@ -233,6 +221,7 @@ gulp.task('default', ['styles', 'scripts'], (done) => {
   const sassSources = getSassSrc(argv, baseTheme);
   const cssSources = getSrc('./wp-content/%location%/**/*.css', location);
   const jsSources = getSrc('./wp-content/%location%/src/js/**/*.js', location);
+
 
   // If we're running a child theme only make sure the parent
   // theme is included as well!
