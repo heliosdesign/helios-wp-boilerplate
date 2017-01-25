@@ -20,9 +20,9 @@ const config = require('./gulpconfig');
 
 let ENV = (argv.production || argv.prod || argv.p) ? 'production' : 'development';
 
-if (argv.development || argv.dev || argv.d) {
-  ENV = 'development';
-}
+// if (argv.development || argv.dev || argv.d) {
+//   ENV = 'development';
+// }
 
 
 /**
@@ -250,6 +250,6 @@ gulp.task('default', ['styles', 'scripts'], (done) => {
 
 // Build the thing in production mode (unless otherwise specified);
 gulp.task('build', ['info'], done => {
-  ENV = (argv.dev || argv.d) ? 'development' : 'production';
+  ENV = (argv.development || argv.dev || argv.d) ? 'development' : 'production';
   runSequence(['styles', 'scripts'], ['imagemin', 'svgmin'], done);
 });
