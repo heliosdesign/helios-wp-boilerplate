@@ -2,7 +2,7 @@
  * Gulp Configuration
  *
  * All the major configuration options for gulp tasks
- * go in this directory.
+ * go in this file.
  */
 
 
