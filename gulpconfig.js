@@ -5,21 +5,41 @@
  * go in this file.
  */
 
+module.exports.plugins = [
+  {id: 'base-plugin'}
+];
 
-// The theme that most of the styles are pulled from.
-// This will either be the parent theme if you are using
-// a child theme or the single theme that you are using.
-module.exports.baseTheme = 'base-theme';
+module.exports.projects = [
+  // Themes
+  {
+    id: 'base-theme',
+    name: 'Helios WP Boilerplate',
+    description: 'A quick starting point for WordPress themes built from scratch.',
+    version: '0.0.0',
+    type: 'theme'
+  },
+  {
+    id: 'child-theme',
+    name: 'Helios WP Boilerplate (Child Theme)',
+    description: 'A quick starting point for WordPress child themes.',
+    parent: 'base-theme',
+    version: '0.0.0',
+    type: 'theme'
+  },
 
-module.exports.devDirs = {
-  plugins: [
-    'base-plugin'
-  ],
-  themes: [
-    'base-theme',
-    'child-theme'
-  ]
-};
+  // Plugins
+  {
+    id: 'base-plugin',
+    type: 'plugin'
+  }
+];
+
+// Development Directories are individual project or theme (or other)
+// directories. For example 'base-plugin' and 'child-theme'.
+// module.exports.projects = {
+//   plugins: module.exports.plugins,
+//   themes: module.exports.themes
+// };
 
 // The root directory where the themes and plugin folders
 // are found. This will likely not need to be changed.
