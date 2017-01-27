@@ -24,53 +24,22 @@ const config = require('./gulpconfig');
 let ENV = (argv.production || argv.prod || argv.p) ? 'production' : 'development';
 
 const BASE_DIR = config.baseDir;
-const WATCH_DIRS = config.watchDirs;
+// const WATCH_DIRS = config.watchDirs;
 const PROJECTS = config.projects;
 // const THEMES = config.themes;
 
-const ARG_PROJ = argv.proj;
-const ARG_TYPE = getType(argv);
-
-
-
-
+const ARG_PROJ = argv.project || argv.proj || argv.p || null;
+const ARG_TYPE = argv.type || argv.t || null;
 
 
 /**
  * Functions
  */
 
-function getType(argv) {
-  if (argv.plugins) {
-    return 'plugin';
-  } else if (argv.themes) {
-    return 'theme';
-  } else {
-    return argv.type || argv.t;
-  }
-}
-
 function swallowError(error) {
   console.log(error.toString());
   this.emit('end');
 };
-
-// Return a location string based on opts object.
-// Will either be 'dir/name' or 'dir' depending on opts specificity.
-//
-// @param opts [object]   Argument variables for specific watch or dev directories.
-//                        - plugin [string/bool]
-//                        - theme  [string/bool] 
-function getLocation(opts) {
-  if (opts.plugin) {
-    return typeof opts.plugin === 'string' ? `plugins/${opts.plugin}` : 'plugins/**';
-  } else if (opts.theme) {
-    return typeof opts.theme === 'string' ? `themes/${opts.theme}` : 'themes/**';
-  } else {
-    return null;
-  }
-}
-
 
 // Create a path based on the parameters.
 //
@@ -84,48 +53,28 @@ function setPath(pattern, location, base) {
 // Get an array of sources based on config options and flags.
 //
 // @param pattern   [string]  The suffix - where to look in the specified directory.
-// @param opts      [object]  Override the argv flags. eg: {theme: 'child-theme'}.  
-function getSrc(pattern) {
-
-  // const location = getLocation(opts || argv);
-
-  // const type = opts || argv;
-  // const flags = argv.plugin || argv.theme || null;
-
-  // if (location && WATCH_DIRS.indexOf(location) === -1) {
-  //   return [setPath(pattern, location)];
-  // } else {
-    return src = PROJECTS
-      .filter((project) => !ARG_ID || ARG_ID === project.id)
-      .filter((project) => !ARG_TYPE || ARG_TYPE === project.type)
-      .map((project) => setPath(pattern, `${project.type}s/${project.id}`));
-
-    // return WATCH_DIRS
-    //   .filter((d) => !location || d === location)
-    //   .map((dir) => PROJECTS[dir].map((proj) => setPath(pattern, `${dir}/${proj.id}`)))
-    //   .reduce((a, b) => a.concat(b), []);
-  }
-
+// @param proj      [string]  A project id. Target that project specifically.
+// @param type      [string]  Get the sources relevant to a type. eg. 'theme', 'plugin'.
+function getSrc(pattern, proj, type) {
+  return PROJECTS
+    .filter((project) => !proj || proj === project.id)
+    .filter((project) => !type || type === project.type)
+    .map((project) => setPath(pattern, `${project.type}s/${project.id}`));
 }
 
 // Helper to make sure parent themes are included when child-theme flags are specified.
 function getSassSrc(id) {
 
-  const sources = getSrc('src/sass/**/*.sass');
+  const sources = getSrc('src/sass/**/*.sass', id);
 
   // If we're running a child theme, make sure the parent theme is included as well!
   // if (typeof argv.theme === 'string' && argv.theme !== baseTheme) {
   if ((PROJECTS[id] || {}).parent) {
-    return sources.concat(getSrc('src/sass/**/*.sass', {theme: PROJECTS[id].parent}));
-  } else {
-    return sources;
+    sources.push(getSrc('src/sass/**/*.sass', PROJECTS[id].parent));
   }
-}
 
-// function isTheme(argv, theme) {
-//   const currentTheme = typeof argv.theme === 'string' ? argv.theme : null;
-//   return (!currentTheme || currentTheme === theme.id);
-// }
+  return sources;
+}
 
 // Bundle up the JavaScripts.
 //
@@ -231,7 +180,7 @@ function writeInfo(theme, opts) {
       `$info-version: '${theme.version}'`
     ].join('\r\n');
 
-    const paths = getSrc('src/sass/global/_info-variables.sass', {theme: theme.id});
+    const paths = getSrc('src/sass/global/_info-variables.sass', theme.id);
 
     if (paths[0]) {
 
@@ -264,7 +213,7 @@ gulp.task('info', function(done) {
 
   const promises = PROJECTS
     .filter((project) => project.type === 'theme')
-    .filter((project) => !ARG_ID || ARG_ID === project.id)
+    .filter((project) => !ARG_PROJ || ARG_PROJ === project.id)
     .map((theme) => writeInfo(theme));
 
   Q.all(promises).then((res) => {
@@ -275,12 +224,12 @@ gulp.task('info', function(done) {
 // SASS compiling task.
 gulp.task('styles', function() {
 
-  const sources = getSassSrc(ARG_ID);
+  const sources = getSassSrc(ARG_PROJ);
 
   const includePaths = PROJECTS
-    .filter((project) => project.type === 'theme' && theme.parent)
-    .filter((project) => !ARG_ID || ARG_ID === project.id)
-    .map((theme) => getSrc('src/sass', {theme: theme.parent})[0]);
+    .filter((project) => project.type === 'theme' && project.parent)
+    .filter((project) => !ARG_PROJ || ARG_PROJ === project.id)
+    .map((theme) => getSrc('src/sass', theme.parent)[0]);
 
   runStyles(sources, ENV, includePaths);
   
@@ -288,14 +237,14 @@ gulp.task('styles', function() {
 
 // JavaScript compiling task.
 gulp.task('scripts', ['lint'], () => {
-  const sources = getSrc('src/js/**.js');
+  const sources = getSrc('src/js/**.js', ARG_PROJ, ARG_TYPE);
 
   runScripts(sources, ENV);
 });
 
 // JavaScript linter. See .eslintrc to adjust the rules.
 gulp.task('lint', () => {
-  const sources = getSrc('src/js/**/*.js');
+  const sources = getSrc('src/js/**/*.js', ARG_PROJ, ARG_TYPE);
 
   return gulp.src(sources)
     .pipe(plugins.eslint())
@@ -305,7 +254,7 @@ gulp.task('lint', () => {
 
 // Image minifying task.
 gulp.task('imagemin', () => {
-  const sources = getSrc('src/assets/img/**/*.{png,gif,jpg}');
+  const sources = getSrc('src/assets/img/**/*.{png,gif,jpg}', ARG_PROJ, ARG_TYPE);
 
   return gulp.src(sources, {base: './'})
     .pipe(plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
@@ -317,9 +266,7 @@ gulp.task('imagemin', () => {
 
 // SVG minifying task.
 gulp.task('svgmin', () => {
-
-  // const location = getLocation(argv);
-  const sources = getSrc('src/assets/svg/**/*.svg');
+  const sources = getSrc('src/assets/svg/**/*.svg', ARG_PROJ, ARG_TYPE);
 
   return gulp.src(sources, {base: './'})
     .pipe(plugins.svgmin())
@@ -336,8 +283,8 @@ gulp.task('default', (done) => {
   plugins.livereload.listen();
 
   runSequence('info', ['styles', 'scripts'], function() {
-    const sassSources = getSassSrc(ARG_ID);
-    const cssSources = getSrc('**/*.css');
+    const sassSources = getSassSrc(ARG_PROJ);
+    const cssSources = getSrc('**/*.css', ARG_PROJ, ARG_TYPE);
     const jsSources = getSrc('src/js/**/*.js');
     const compiledSources = cssSources.concat(getSrc('js/*.bundle.js'));
 

@@ -14,9 +14,7 @@ Current WordPress Version: `4.7.1`
 1. Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`
 2. Jump into the directory and delete the `.git` directory (unless you want to work on this boilerplate). You can now create a new repo if you want to.
 3. Run `$ npm install` to get the tooling dependencies.
-4. If you change the name of your theme, child theme or base plugin (as you should), make sure you adjust `gulpconfig.js`.
-5. Change the meta information at the top of `src/sass/global/_template-header.sass` in the theme directory.
-6. Run `$ gulp` to recompile the CSS with the new template information and to make sure Gulp is running without errors.
+4. Update the individual "project" information in `gulpconfig.js`.
 7. Create your database and run the WordPress install by navigating to the URL and following the directions.
 
 
@@ -31,19 +29,15 @@ We're using an extra bit of trickery to load in asset files depending on the env
 
 There are some more things you will want to tweak/configure/delete.
 
-### Template Information
-
-Make sure to update the meta data that gets placed at the top of `style.css`. This can be found in `src/sass/global/_template-header.sass` in the base theme or child theme.
-
-The version number in the template header of the current theme in use also sets the cache busters on enqueued styles and scripts. So if you make a major change you should update the version in `_template-header.sass`.
-
 ### Gulp Config
 
-Whenever you add, delete, or change the name of a plugin or theme you should update the `gulpconfig.js` file. This tells gulp which themes are custom and in development and which are from vendors.
+Whenever you add, delete, or change the name of a plugin or theme you should update the `gulpconfig.js` file. This tells gulp all the information about that "project" and also sets the information for themes.
+
+The `gulpconfig.js` file is fully documented so you may find answers there.
 
 ### Child Themes
 
-This project has an example child theme included. If you do not want to use a child theme, just delete the whole folder. If you are planning to use it, have a look in the `src/sass/styles.sass` file to see how the style system works. Similarly, there are instructions in the `functions.php` file. See the **Gulp Tasks** section for information on how to run tasks for a child theme as opposed to the base theme.
+This project has an example child theme included. If you do not want to use a child theme, just delete the whole folder and adjust `gulpconfig.js`. If you are planning to use it, have a look in the `src/sass/styles.sass` file to see how the style system works. Similarly, there are instructions in the `functions.php` file. See the **Gulp Tasks** section for information on how to run tasks for a child theme as opposed to the base theme.
 
 ### Project Plugin
 
@@ -59,8 +53,7 @@ The `db.php` file, found in the `wp-content` directory, includes some functions 
 
 ## Gulp Tasks
 
-Everything is done with gulp. Here is a list of useful tasks:
-
+Everything is done with gulp.
 
 `gulp`
 	
@@ -91,16 +84,22 @@ All tasks are run on all plugins and themes defined in the `gulpconfig.js` file 
 
 ### Gulp Task Options
 
-##### --theme [theme-name], --plugin [plugin-name]
+##### --project, --proj, -p [project-id]
 
-Run any task on a specific theme or plugin. The name is optional. If left out the task will be run on all themes or plugins defined in the config file.
+Run any task on a specific "project" (theme or plugin). If left out the task will be run on all themes or plugins defined in the config file.
 
 ```
-$ gulp build --theme child-theme
-// Will only build the child theme.
+$ gulp build --proj base-plugin
+// Will only build the base-plugin project.
+```
 
-$ gulp imagemin --plugin
-// Will minify any images in custom plugins (not in themes).
+##### --type, -t [project-type]
+
+Run any task on all projects with a specific type.
+
+```
+$ gulp --type theme
+// Builds and watches all registered projects with the type 'theme'.
 ```
 
 ##### --dev, -d
@@ -127,7 +126,7 @@ gulp watch -p
 It's fine to combine options.
 
 ```
-$gulp build -d --theme base-theme
+$gulp build -d --proj base-theme
 // Build the base theme but don't minify styles or scripts.
 ```
 
@@ -136,3 +135,12 @@ $gulp build -d --theme base-theme
 ## Deployment
 
 This setup provides flexibility in how to deploy a project. Separate deploy hooks can be used to deploy each theme and custom plugin. Or you could deploy the whole wp-content directory and just get fancy with the `.gitignore` file.
+
+## Known Issues
+
+Occasionally gulp throws an error that looks like this:
+
+```
+(FSEvents.framework) FSEventStreamFlushSync(): failed assertion '(SInt64)last_id > 0LL'
+```
+I don't think it actually affects anything, but I usually re-run most recent task and it goes away.
