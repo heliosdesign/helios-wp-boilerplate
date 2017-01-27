@@ -240,11 +240,6 @@ gulp.task('buildProject', (done) => {
     .catch((err) => console.log(err.toString()));
 });
 
-// Create new projects.
-gulp.task('create', (done) => {
-  runSequence('buildProject', 'info', done);
-});
-
 // Set the info in theme CSS base on gulpconfig.js
 gulp.task('info', (done) => {
 
@@ -339,6 +334,10 @@ gulp.task('default', (done) => {
   
 });
 
+// Create new projects.
+gulp.task('create', (done) => {
+  runSequence('buildProject', 'info', done);
+});
 
 // Build the thing in production mode (unless otherwise specified);
 gulp.task('build', ['info'], (done) => {
