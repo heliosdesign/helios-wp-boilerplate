@@ -12,12 +12,5 @@ error_log
 wp-config.php
 wp-content/uploads
 
-# No need to add compiled assets
-#
-# Make sure you remove these if you don't change
-# the names of the development directories.
-
-wp-content/plugins/base-plugin/js
-wp-content/themes/base-theme/js
-wp-content/themes/base-theme/assets
-wp-content/themes/child-theme/assets
+wp-content/plugins/*/
+wp-content/themes/*/
