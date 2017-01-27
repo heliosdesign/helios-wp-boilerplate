@@ -202,35 +202,47 @@ function writeInfo(theme, opts) {
   });
 }
 
-function newTemplate(project) {
+function newProject(project) {
   return Q.Promise((resolve, reject) => {
 
     const outPath = `${BASE_DIR}/${project.type}s/${project.id}`;
 
     if (!fs.existsSync(path)) {
-      console.log(path);
       const tmplName = `${project.parent ? 'child-' : ''}${project.type}`;
+      const stream = gulp.src(`${TEMPLATE_DIR}/${tmplName}${'/**/*.*'}`)
+        .pipe(gulp.dest(outPath));
 
-      gulp.src(TEMPLATE_DIR + '/' + tmplName + '/**/*.*')
-        .pipe(plugins.rename((dir) => {
-          console.log(dir);
-        }))
-        .pipe(gulp.dest('./wp-content/' + project.type + 's/' + project.id));
+      stream.on('end', () => {
+        resolve();
+      });
+
+      stream.on('error', (err) => {
+        reject(err);
+      });
+    } else {
+      resolve();
     }
-
-    resolve();
   });
 }
 
 /**
  * Tasks
  */
-gulp.task('construct', (done) => {
-  const promises = PROJECTS.map((project) => newTemplate(project));
 
-  Q.all(promises).then((res) => {
-    return done();
-  })
+// Move and rename projects from template.
+gulp.task('buildProject', (done) => {
+  const promises = PROJECTS
+    .filter((project) => !ARG_PROJ || ARG_PROJ === project.id)
+    .map((project) => newProject(project));
+
+  Q.all(promises)
+    .then((res) => done())
+    .catch((err) => console.log(err.toString()));
+});
+
+// Create new projects.
+gulp.task('create', (done) => {
+  runSequence('buildProject', 'info', done);
 });
 
 // Set the info in theme CSS base on gulpconfig.js
@@ -309,7 +321,7 @@ gulp.task('default', (done) => {
 
   plugins.livereload.listen();
 
-  runSequence('info', ['styles', 'scripts'], function() {
+  runSequence(['styles', 'scripts'], function() {
     const sassSources = getSassSrc(ARG_PROJ);
     const cssSources = getSrc('**/*.css', ARG_PROJ, ARG_TYPE);
     const jsSources = getSrc('src/js/**/*.js');

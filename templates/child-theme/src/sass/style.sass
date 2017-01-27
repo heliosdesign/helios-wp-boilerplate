@@ -1,0 +1,23 @@
+@import global/info-variables
+
+
+// Set our own variables here to override the !default
+// variables in the base-theme.
+
+@import global/child-variables
+
+
+// Now pull in everything from the includes file in
+// the base theme, but with changes in any of the variables 
+// we have redefined in global/variables.
+
+// We can get includes from the parent theme because we 
+// defined it as an includePath in gulp based on 'basetheme'
+// in the gulpconfig.js file.
+
+@import includes
+
+
+// And finally, any more overrides can go here. For example,
+// you may want extra partials, etc. for an individual
+// child theme.
