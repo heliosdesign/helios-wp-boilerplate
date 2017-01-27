@@ -18,18 +18,17 @@ const source          = require('vinyl-source-stream');
 /**
  * Constants
  */
-const config = require('./gulpconfig');
+const config          = require('./gulpconfig');
 
 // ENV can be re-set in tasks.
-let ENV = (argv.production || argv.prod || argv.p) ? 'production' : 'development';
+let ENV               = (argv.production || argv.prod || argv.p) ? 'production' : 'development';
 
-const BASE_DIR = config.baseDir;
-// const WATCH_DIRS = config.watchDirs;
-const PROJECTS = config.projects;
-// const THEMES = config.themes;
+const BASE_DIR        = config.baseDir;
+const TEMPLATE_DIR    = config.templateDir;
+const PROJECTS        = config.projects;
 
-const ARG_PROJ = argv.project || argv.proj || argv.p || null;
-const ARG_TYPE = argv.type || argv.t || null;
+const ARG_PROJ        = argv.project || argv.proj || argv.p || null;
+const ARG_TYPE        = argv.type || argv.t || null;
 
 
 /**
@@ -168,7 +167,7 @@ function runStyles(sources, env, includePaths) {
 // @param opts  [object]  Object variables. For now only
 //                          -log [string]: 'none', 'title'
 function writeInfo(theme, opts) {
-  return Q.Promise(function(resolve, reject) {
+  return Q.Promise((resolve, reject) => {
     const options = opts || {};
     const parent = theme.parent ? `'Template: ${theme.parent}'` : `''`;
     const contents = [
@@ -203,11 +202,39 @@ function writeInfo(theme, opts) {
   });
 }
 
+function newTemplate(project) {
+  return Q.Promise((resolve, reject) => {
+
+    const outPath = `${BASE_DIR}/${project.type}s/${project.id}`;
+
+    if (!fs.existsSync(path)) {
+      console.log(path);
+      const tmplName = `${project.parent ? 'child-' : ''}${project.type}`;
+
+      gulp.src(TEMPLATE_DIR + '/' + tmplName + '/**/*.*')
+        .pipe(plugins.rename((dir) => {
+          console.log(dir);
+        }))
+        .pipe(gulp.dest('./wp-content/' + project.type + 's/' + project.id));
+    }
+
+    resolve();
+  });
+}
+
 /**
  * Tasks
  */
+gulp.task('construct', (done) => {
+  const promises = PROJECTS.map((project) => newTemplate(project));
 
-gulp.task('info', function(done) {
+  Q.all(promises).then((res) => {
+    return done();
+  })
+});
+
+// Set the info in theme CSS base on gulpconfig.js
+gulp.task('info', (done) => {
 
   if (ARG_TYPE === 'plugin') { return done(); }
 
@@ -217,7 +244,7 @@ gulp.task('info', function(done) {
     .map((theme) => writeInfo(theme));
 
   Q.all(promises).then((res) => {
-    done();
+    return done();
   });
 });
 
