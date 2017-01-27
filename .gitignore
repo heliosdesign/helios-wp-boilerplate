@@ -14,3 +14,10 @@ wp-content/uploads
 
 wp-content/plugins/*/
 wp-content/themes/*/
+
+
+# You probably don't want to include the
+# templates directory in production. Comment this
+# out once you have created your new repository.
+
+# templates/
