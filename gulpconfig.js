@@ -4,9 +4,11 @@
  * All the major configuration options for gulp tasks.
  */
 
- // The root directory where the themes and plugin folders
- // are found. This will likely not need to be changed.
- module.exports.baseDir = './wp-content';
+// The root directory where the themes and plugin folders
+// are found. This will likely not need to be changed.
+module.exports.baseDir = './wp-content';
+
+module.exports.templateDir = './templates';
 
 // Projects
 //

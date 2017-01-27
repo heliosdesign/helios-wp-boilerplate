@@ -14,7 +14,8 @@ Current WordPress Version: `4.7.1`
 1. Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`
 2. Jump into the directory and delete the `.git` directory (unless you want to work on this boilerplate). You can now create a new repo if you want to.
 3. Run `$ npm install` to get the tooling dependencies.
-4. Update the individual "project" information in `gulpconfig.js`.
+4. Update "project" information in `gulpconfig.js`.
+5. Run `$ gulp create` to create all the new projects defined in `gulpconfig.js`.
 7. Create your database and run the WordPress install by navigating to the URL and following the directions.
 
 
@@ -33,15 +34,17 @@ There are some more things you will want to tweak/configure/delete.
 
 Whenever you add, delete, or change the name of a plugin or theme you should update the `gulpconfig.js` file. This tells gulp all the information about that "project" and also sets the information for themes.
 
-The `gulpconfig.js` file is fully documented so you may find answers there.
+This is also how you can create new projects. Just add a node with the correct info and then run `$ gulp create --proj [project-id]`. More info in the Gulp Tasks section.
+
+The `gulpconfig.js` file is fully documented so you may find answers there if you have any questions.
 
 ### Child Themes
 
-This project has an example child theme included. If you do not want to use a child theme, just delete the whole folder and adjust `gulpconfig.js`. If you are planning to use it, have a look in the `src/sass/styles.sass` file to see how the style system works. Similarly, there are instructions in the `functions.php` file. See the **Gulp Tasks** section for information on how to run tasks for a child theme as opposed to the base theme.
+If you have created a child theme, have a look in the `src/sass/styles.sass` file to see how the style system works. Similarly, there are instructions in the `functions.php` file. See the **Gulp Tasks** section for information on how to run tasks for a child theme as opposed to the base theme.
 
 ### Project Plugin
 
-It has become more common (and viewed as best practice) to pull site functionality out of themes and into plugins. As such, there is a base-plugin template included in this repository.
+It has become more common (and viewed as best practice) to pull site functionality out of themes and into plugins. As such, there is a plugin template included in this repository.
 
 Within that plugin is a set of classes to make adding settings panels, custom post types and meta boxes easier.
 
@@ -59,9 +62,15 @@ Everything is done with gulp.
 	
 Compiles the sass, runs a linter and bundles the JavaScript files and watches the `src/` for changes.
 
+`gulp create`
+
+Reads the `gulpconfig.js` file and creates new projects based on the info provided. This task will not overwrite existing folders it checks and exits before moving any files. Use the `--proj`, `-p` flag to specify a single project to create. The `--type`, `-t` flags won't do anything for this task.
+
 `gulp build`
 	
 Gets the specified working directory ready for deployment. It runs and compiles the sass into minified css, and uglifies all the JS files.
+
+
 
 ### Other Tasks
 
@@ -77,9 +86,15 @@ Gets the specified working directory ready for deployment. It runs and compiles 
 
 `gulp svgmin`: Optimize svgs in `src/assets/svg/`.
 
+`gulp info`: Creates a SASS variable file that provides meta data about the theme.
+
+`gulp buildProject`: Reads the `gulpconfig.js` file and copies relevant templates to the proper directory. 
+
+*Note: Use `gulp create` instead of this so that info variables are also set up).*
 
 
-All tasks are run on all plugins and themes defined in the `gulpconfig.js` file unless an option is used to specify which directory to use.
+
+All tasks are run on all projects defined in the `gulpconfig.js` file unless an option is used to specify which directory to use.
 
 
 ### Gulp Task Options

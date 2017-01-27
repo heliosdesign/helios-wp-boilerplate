@@ -18,18 +18,17 @@ const source          = require('vinyl-source-stream');
 /**
  * Constants
  */
-const config = require('./gulpconfig');
+const config          = require('./gulpconfig');
 
 // ENV can be re-set in tasks.
-let ENV = (argv.production || argv.prod || argv.p) ? 'production' : 'development';
+let ENV               = (argv.production || argv.prod || argv.p) ? 'production' : 'development';
 
-const BASE_DIR = config.baseDir;
-// const WATCH_DIRS = config.watchDirs;
-const PROJECTS = config.projects;
-// const THEMES = config.themes;
+const BASE_DIR        = config.baseDir;
+const TEMPLATE_DIR    = config.templateDir;
+const PROJECTS        = config.projects;
 
-const ARG_PROJ = argv.project || argv.proj || argv.p || null;
-const ARG_TYPE = argv.type || argv.t || null;
+const ARG_PROJ        = argv.project || argv.proj || argv.p || null;
+const ARG_TYPE        = argv.type || argv.t || null;
 
 
 /**
@@ -168,7 +167,7 @@ function runStyles(sources, env, includePaths) {
 // @param opts  [object]  Object variables. For now only
 //                          -log [string]: 'none', 'title'
 function writeInfo(theme, opts) {
-  return Q.Promise(function(resolve, reject) {
+  return Q.Promise((resolve, reject) => {
     const options = opts || {};
     const parent = theme.parent ? `'Template: ${theme.parent}'` : `''`;
     const contents = [
@@ -203,11 +202,46 @@ function writeInfo(theme, opts) {
   });
 }
 
+function newProject(project) {
+  return Q.Promise((resolve, reject) => {
+
+    const outPath = `${BASE_DIR}/${project.type}s/${project.id}`;
+
+    if (!fs.existsSync(path)) {
+      const tmplName = `${project.parent ? 'child-' : ''}${project.type}`;
+      const stream = gulp.src(`${TEMPLATE_DIR}/${tmplName}${'/**/*.*'}`)
+        .pipe(gulp.dest(outPath));
+
+      stream.on('end', () => {
+        resolve();
+      });
+
+      stream.on('error', (err) => {
+        reject(err);
+      });
+    } else {
+      resolve();
+    }
+  });
+}
+
 /**
  * Tasks
  */
 
-gulp.task('info', function(done) {
+// Move and rename projects from template.
+gulp.task('buildProject', (done) => {
+  const promises = PROJECTS
+    .filter((project) => !ARG_PROJ || ARG_PROJ === project.id)
+    .map((project) => newProject(project));
+
+  Q.all(promises)
+    .then((res) => done())
+    .catch((err) => console.log(err.toString()));
+});
+
+// Set the info in theme CSS base on gulpconfig.js
+gulp.task('info', (done) => {
 
   if (ARG_TYPE === 'plugin') { return done(); }
 
@@ -217,7 +251,7 @@ gulp.task('info', function(done) {
     .map((theme) => writeInfo(theme));
 
   Q.all(promises).then((res) => {
-    done();
+    return done();
   });
 });
 
@@ -282,7 +316,7 @@ gulp.task('default', (done) => {
 
   plugins.livereload.listen();
 
-  runSequence('info', ['styles', 'scripts'], function() {
+  runSequence(['styles', 'scripts'], function() {
     const sassSources = getSassSrc(ARG_PROJ);
     const cssSources = getSrc('**/*.css', ARG_PROJ, ARG_TYPE);
     const jsSources = getSrc('src/js/**/*.js');
@@ -300,6 +334,10 @@ gulp.task('default', (done) => {
   
 });
 
+// Create new projects.
+gulp.task('create', (done) => {
+  runSequence('buildProject', 'info', done);
+});
 
 // Build the thing in production mode (unless otherwise specified);
 gulp.task('build', ['info'], (done) => {
