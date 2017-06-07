@@ -336,7 +336,7 @@ gulp.task('default', (done) => {
 
 // Create new projects.
 gulp.task('create', (done) => {
-  runSequence('buildProject', 'info', done);
+  runSequence('buildProject', 'info', ['styles', 'scripts'], done);
 });
 
 // Build the thing in production mode (unless otherwise specified);

@@ -8,6 +8,8 @@
 // are found. This will likely not need to be changed.
 module.exports.baseDir = './wp-content';
 
+// Where the project templates are located. This probably
+// won't need to be changed.
 module.exports.templateDir = './templates';
 
 // Projects

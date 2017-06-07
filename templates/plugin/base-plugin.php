@@ -7,6 +7,8 @@ Author: Helios Design Labs
 Author URI: http://heliosdesignlabs.com/
 */
 
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) { die; }
 
 /**
  * Base Functions
