@@ -13,7 +13,7 @@ Current WordPress Version: `4.7.1`
 
 1. Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`
 2. Jump into the directory and delete the `.git` directory (unless you want to work on this boilerplate). You can now create a new repo if you want to.
-3. Run `$ npm install` to get the tooling dependencies.
+3. Run `$ npm install` or `$ yarn install` to get the tooling dependencies.
 4. Update "project" information in `gulpconfig.js`.
 5. Run `$ gulp create` to create all the new projects defined in `gulpconfig.js`.
 7. Create your database and run the WordPress install by navigating to the URL and following the directions.
@@ -36,7 +36,7 @@ Whenever you add, delete, or change the name of a plugin or theme you should upd
 
 This is also how you can create new projects. Just add a node with the correct info and then run `$ gulp create --proj [project-id]`. More info in the Gulp Tasks section.
 
-The `gulpconfig.js` file is fully documented so you may find answers there if you have any questions.
+The `gulpconfig.js` file is fully commented so you may find answers there if you have any questions.
 
 ### Child Themes
 
