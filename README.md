@@ -6,7 +6,7 @@ A quick starting point for WordPress projects.
 
 **Note:** This boilerplate has been refactord *again* to include WordPress core.
 
-Current WordPress Version: `4.7.1`
+Current WordPress Version: `4.8`
 
 
 ## Getting Started (Local)
