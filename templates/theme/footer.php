@@ -6,7 +6,7 @@
 <?php wp_footer(); ?>
 
 <?php
-  if ( DEV_ENV === true ) {
+  if ( is_super_admin() ) {
     $db_info = array(
       'seconds' => timer_stop( 0 ),
       'queries' => $wpdb->num_queries
