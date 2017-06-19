@@ -30,6 +30,7 @@ We're using an extra bit of trickery to load in asset files depending on the env
 
 There are some more things you will want to tweak/configure/delete.
 
+
 ### Gulp Config
 
 Whenever you add, delete, or change the name of a plugin or theme you should update the `gulpconfig.js` file. This tells gulp all the information about that "project" and also sets the information for themes.
@@ -52,6 +53,12 @@ Within that plugin is a set of classes to make adding settings panels, custom po
 ### db.php
 
 The `db.php` file, found in the `wp-content` directory, includes some functions for updating URLs, forcing theme directories and changing the upload location.
+
+### Security
+
+There is an example `htaccess.txt` file that includes recommended security settings. Rename this file `.htaccess` and then save permalinks in your WordPress dashboard to instantiate apache routing.
+
+There is a second `.htaccess` file in the `uploads/` directory that is preventing `.php` scripts from executing in the uploads directory. As per [the codex](https://codex.wordpress.org/Hardening_WordPress#WP-Content.2FUploads), this can break the theme if it requires PHP execution in `uploads/`. Remove or comment this out if that is the case.
 
 
 ## Gulp Tasks
