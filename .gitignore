@@ -10,7 +10,10 @@ error_log
 .sass-cache
 
 wp-config.php
-wp-content/uploads
+wp-content/uploads/*/
+
+# Include uploads .htaccess file for security
+!wp-content/uploads/.htaccess
 
 wp-content/plugins/*/
 wp-content/themes/*/
