@@ -26,7 +26,4 @@ if ( ! defined( 'WPINC' ) ) { die; }
  * Functions that depend on classes.
  */
 
-/**
- * Custom Post Types
- */
 ?>
