@@ -30,8 +30,8 @@ class Base_Plugin_Config {
    *
    * Add actions and shortcodes.
    *
-   * @since    1.0.0
-   * @access   private
+   * @since    0.0.0
+   * @access   public
    */
   public function initialize() {
 
@@ -44,9 +44,10 @@ class Base_Plugin_Config {
   /**
    * Register scripts and register and enqueue styles.
    *
-   * @since    0.0.0
+   * @since     0.0.0
+   * @access    private
    */
-  public function register_scripts() {
+  private function register_scripts() {
     // global $post;
 
     wp_register_style( 'base-plugin-style', plugin_dir_url( dirname( __FILE__ ) ) . 'css/plugin.css', array(), $this->cache );
@@ -60,6 +61,7 @@ class Base_Plugin_Config {
    * Register any custom post types here.
    *
    * @since     0.0.0
+   * @access    public
    */
   public function register_custom_post_types() {
 
