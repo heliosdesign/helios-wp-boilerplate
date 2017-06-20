@@ -316,10 +316,12 @@ gulp.task('default', (done) => {
 
   plugins.livereload.listen();
 
-  runSequence(['styles', 'scripts'], function() {
+  runSequence(['styles', 'scripts', 'imagemin', 'svgmin'], function() {
     const sassSources = getSassSrc(ARG_PROJ);
     const cssSources = getSrc('**/*.css', ARG_PROJ, ARG_TYPE);
     const jsSources = getSrc('src/js/**/*.js');
+    const imgSources = getSrc('src/assets/img/**/*.{png,gif,jpg}', ARG_PROJ, ARG_TYPE);
+    const svgSources = getSrc('src/assets/svg/**/*.svg', ARG_PROJ, ARG_TYPE);
     const compiledSources = cssSources.concat(getSrc('js/*.bundle.js'));
 
     // Styles
@@ -327,6 +329,12 @@ gulp.task('default', (done) => {
 
     // Scripts
     gulp.watch(jsSources, ['scripts']);
+
+    // Images
+    gulp.watch(imgSources, ['imagemin']);
+
+    // SVG
+    gulp.watch(svgSources, ['svgmin']);
 
     // If any css or .bundle javascript file changes, reload.
     gulp.watch(compiledSources, plugins.livereload.changed);
