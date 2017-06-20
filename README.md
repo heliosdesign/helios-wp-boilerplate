@@ -11,7 +11,7 @@ Current WordPress Version: `4.8`
 
 ## Getting Started (Local)
 
-1. *Clone this repository into a new project directory: `$ git clone --recursive git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`.
+1. *Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`.
 2. Jump into the directory and delete the `.git` directory (unless you want to work on this boilerplate). You can now create a new repo if you want to.
 3. Run `$ npm install` or `$ yarn install` to get the tooling dependencies.
 4. Update "project" information in `gulpconfig.js`.
