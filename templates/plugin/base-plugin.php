@@ -10,20 +10,27 @@ Author URI: http://heliosdesignlabs.com/
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) { die; }
 
-/**
- * Base Functions
- */
+
+require_once( plugin_dir_path( __FILE__ ) . 'inc/class-base-plugin-config.php' );
 
 /**
- * Class Includes.
+ * Register Activation Hook
+ *
+ * Uncomment if you want this function to fire when the plugin is activated.
  */
-// include( plugin_dir_path( __FILE__ ) . 'inc/admin-classes/class-custom-post-type.php' );
-// include( plugin_dir_path( __FILE__ ) . 'inc/admin-classes/class-meta-boxes.php');
-// include( plugin_dir_path( __FILE__ ) . 'inc/admin-classes/class-setting.php');
-// include( plugin_dir_path( __FILE__ ) . 'inc/admin-classes/class-customizer.php');
+// register_activation_hook( __FILE__, 'base_plugin_activation' );
 
-/**
- * Functions that depend on classes.
- */
+// function base_plugin_activation() {
+//   $config = new Base_Plugin_Config();
 
+//   $config->register_custom_post_types();
+//   flush_rewrite_rules();
+// }
+
+$config = new Base_Plugin_Config();
+$config->initialize();
+
+// register_deactivation_hook( __FILE__, 'base_plugin_deactivation' ) );
+
+// function base_plugin_deactivation() {}
 ?>
