@@ -4,36 +4,28 @@ A quick starting point for WordPress projects.
 
 **Note:** This theme has been refactored to include the entire directory structure.
 
-**Note:** This boilerplate has been refactord *again* to include WordPress core.
+**Note:** This boilerplate has been refactord _again_ to include WordPress core.
 
-Current WordPress Version: `4.8`
-
+Current WordPress Version: `5.1.1`
 
 ## Getting Started (Local)
 
-1. *Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`.
+1. Clone this repository into a new project directory: `$ git clone git@github.com:heliosdesign/helios-wp-boilerplate.git [project-name]`.
 2. Jump into the directory and delete the `.git` directory (unless you want to work on this boilerplate). You can now create a new repo if you want to.
 3. Run `$ npm install` or `$ yarn install` to get the tooling dependencies.
 4. Update "project" information in `gulpconfig.js`.
 5. Run `$ gulp create` to create all the new projects defined in `gulpconfig.js`.
-7. Create your database and run the WordPress install by navigating to the URL and following the directions.
+6. Create your database.
+7. Copy the `wp-config-local-sample.php` to `wp-config-local.php` and put the database credentials in the latter. You should also set the home URL in this config file if needed.
+8. Run the WordPress install by navigating to the URL and following the directions.
 
-*We use the `--recursive` flag so that submodules also get initialized. Current submodule list:
+We use the `--recursive` flag so that submodules also get initialized. Current submodule list:
 
-* wp-admin-classes: [https://github.com/dansundy/wp-admin-classes](https://github.com/dansundy/wp-admin-classes)
-
-
-## Additional Configuration
-
-*Note: This secton is moot at the moment. The only thing we were using the `DEV_ENV` flag for was unminified JavaScripts. Right now we're compiling to the same file (`file.bundle.js`). Just use `gulp build` before you deploy to make sure the JS is minified.*
-
-We're using an extra bit of trickery to load in asset files depending on the environment. The enqueueing function (found in `base-theme/inc/functions/enqueue-functions.php`) looks to see if a `DEV_ENV` flag is set to `true`. If so, it spits out all the individual, non-minified  files defined in that block. As such, open the `/wp-config.php` file and add `define('DEV_ENV', true);` after the `WP_DEBUG` line close to bottom of the file.
-
+- wp-admin-classes: [https://github.com/dansundy/wp-admin-classes](https://github.com/dansundy/wp-admin-classes)
 
 ## Before You Begin
 
 There are some more things you will want to tweak/configure/delete.
-
 
 ### Gulp Config
 
@@ -53,7 +45,6 @@ It has become more common (and viewed as best practice) to pull site functionali
 
 Within that plugin is a set of classes to make adding settings panels, custom post types and meta boxes easier.
 
-
 ### db.php
 
 The `db.php` file, found in the `wp-content` directory, includes some functions for updating URLs, forcing theme directories and changing the upload location.
@@ -64,13 +55,11 @@ There is an example `htaccess.txt` file that includes recommended security setti
 
 There is a second `.htaccess` file in the `uploads/` directory that is preventing `.php` scripts from executing in the uploads directory. As per [the codex](https://codex.wordpress.org/Hardening_WordPress#WP-Content.2FUploads), this can break the theme if it requires PHP execution in `uploads/`. Remove or comment this out if that is the case.
 
-
 ## Gulp Tasks
 
 Everything is done with gulp.
 
 `gulp`
-	
 Compiles the sass, runs a linter and bundles the JavaScript files and watches the `src/` for changes.
 
 `gulp create`
@@ -78,16 +67,13 @@ Compiles the sass, runs a linter and bundles the JavaScript files and watches th
 Reads the `gulpconfig.js` file and creates new projects based on the info provided. This task will not overwrite existing folders it checks and exits before moving any files. Use the `--proj`, `-p` flag to specify a single project to create. The `--type`, `-t` flags won't do anything for this task.
 
 `gulp build`
-	
 Gets the specified working directory ready for deployment. It runs and compiles the sass into minified css, and uglifies all the JS files.
-
-
 
 ### Other Tasks
 
-`gulp styles`: Compile SASS in `src/sass/`. 
+`gulp styles`: Compile SASS in `src/sass/`.
 
-*Note: If the file is called `style.sass` it will be compiled to `/style.css`. Any other compilable sass file will end up in the `/css/` directory.* 
+_Note: If the file is called `style.sass` it will be compiled to `/style.css`. Any other compilable sass file will end up in the `/css/` directory._
 
 `gulp scripts`: Bundle the JavaScripts in `src/js/`.
 
@@ -99,14 +85,11 @@ Gets the specified working directory ready for deployment. It runs and compiles 
 
 `gulp info`: Creates a SASS variable file that provides meta data about the theme.
 
-`gulp buildProject`: Reads the `gulpconfig.js` file and copies relevant templates to the proper directory. 
+`gulp buildProject`: Reads the `gulpconfig.js` file and copies relevant templates to the proper directory.
 
-*Note: Use `gulp create` instead of this so that info variables are also set up).*
-
-
+_Note: Use `gulp create` instead of this so that info variables are also set up)._
 
 All tasks are run on all projects defined in the `gulpconfig.js` file unless an option is used to specify which directory to use.
-
 
 ### Gulp Task Options
 
@@ -137,7 +120,6 @@ $ gulp build --dev
 // Doesn't  minify styles and scripts.
 ```
 
-
 ##### --prod, -p
 
 Run the task in production mode.
@@ -156,8 +138,6 @@ $gulp build -d --proj base-theme
 // Build the base theme but don't minify styles or scripts.
 ```
 
-
-
 ## Deployment
 
 This setup provides flexibility in how to deploy a project. Separate deploy hooks can be used to deploy each theme and custom plugin. Or you could deploy the whole wp-content directory and just get fancy with the `.gitignore` file.
@@ -169,4 +149,5 @@ Occasionally gulp throws an error that looks like this:
 ```
 (FSEvents.framework) FSEventStreamFlushSync(): failed assertion '(SInt64)last_id > 0LL'
 ```
+
 I don't think it actually affects anything, but I usually re-run most recent task and it goes away.
