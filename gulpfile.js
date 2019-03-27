@@ -13,7 +13,7 @@ const gulpLoadPlugins = require('gulp-load-plugins')
 const path = require('path')
 const plugins = gulpLoadPlugins()
 const Q = require('q')
-const runSequence = require('run-sequence')
+// const runSequence = require('run-sequence')
 const source = require('vinyl-source-stream')
 
 /**
@@ -128,7 +128,7 @@ function getScriptsArr(src) {
 // @param sources       [array/string]  The sass sources.
 // @param env           [env]           Optional. Dev environment. Defaults to 'development'.
 function runScripts(sources, env) {
-  getScriptsArr(sources)
+  return getScriptsArr(sources)
     .then(files => files.map(entry => bundle(entry, env)))
     .then(tasks => es.merge.apply(null, tasks))
     .catch(err => plugins.util.log(plugins.util.colors.yellow(err)))
@@ -265,7 +265,7 @@ gulp.task('info', done => {
 })
 
 // SASS compiling task.
-gulp.task('styles', function() {
+gulp.task('styles', done => {
   const sources = getSassSrc(ARG_PROJ)
 
   const includePaths = PROJECTS.filter(project => project.type === 'theme' && project.parent)
@@ -273,13 +273,8 @@ gulp.task('styles', function() {
     .map(theme => getSrc('src/sass', theme.parent)[0])
 
   runStyles(sources, ENV, includePaths)
-})
 
-// JavaScript compiling task.
-gulp.task('scripts', ['lint'], () => {
-  const sources = getSrc('src/js/**.js', ARG_PROJ, ARG_TYPE)
-
-  runScripts(sources, ENV)
+  done()
 })
 
 // JavaScript linter. See .eslintrc to adjust the rules.
@@ -292,6 +287,18 @@ gulp.task('lint', () => {
     .pipe(plugins.eslint.format())
     .pipe(plugins.eslint.failAfterError())
 })
+
+// JavaScript compiling task.
+gulp.task(
+  'scripts',
+  gulp.series('lint', done => {
+    const sources = getSrc('src/js/**.js', ARG_PROJ, ARG_TYPE)
+
+    runScripts(sources, ENV).then(() => {
+      done()
+    })
+  })
+)
 
 // Image minifying task.
 gulp.task('imagemin', () => {
@@ -324,10 +331,9 @@ gulp.task('svgmin', () => {
 })
 
 // The default task.
-gulp.task('default', () => {
-  plugins.livereload.listen()
-
-  runSequence(['styles', 'scripts', 'imagemin', 'svgmin'], function() {
+gulp.task(
+  'default',
+  gulp.series(plugins.livereload.listen, 'styles', 'scripts', 'imagemin', 'svgmin', done => {
     const sassSources = getSassSrc(ARG_PROJ)
     const cssSources = getSrc('**/*.css', ARG_PROJ, ARG_TYPE)
     const jsSources = getSrc('src/js/**/*.js')
@@ -336,29 +342,49 @@ gulp.task('default', () => {
     const compiledSources = cssSources.concat(getSrc('js/*.bundle.js'))
 
     // Styles
-    gulp.watch(sassSources, ['styles'])
+    gulp.watch(sassSources, gulp.series('styles'))
 
     // Scripts
-    gulp.watch(jsSources, ['scripts'])
+    gulp.watch(jsSources, gulp.series('scripts'))
 
     // Images
-    gulp.watch(imgSources, ['imagemin'])
+    gulp.watch(imgSources, gulp.series('imagemin'))
 
     // SVG
-    gulp.watch(svgSources, ['svgmin'])
+    gulp.watch(svgSources, gulp.series('svgmin'))
 
     // If any css or .bundle javascript file changes, reload.
-    gulp.watch(compiledSources, plugins.livereload.changed)
+    gulp.watch(compiledSources, done => {
+      // plugins.livereload.changed()
+      plugins.livereload.reload()
+      done()
+    })
+    // })
+
+    // runSequence(['styles', 'scripts', 'imagemin', 'svgmin'], function() {
+
+    // })
+    done()
   })
-})
+)
 
 // Create new projects.
-gulp.task('create', done => {
-  runSequence('buildProject', 'info', ['styles', 'scripts'], done)
-})
+gulp.task(
+  'create',
+  gulp.series('buildProject', 'info', 'styles', 'scripts', done => {
+    done()
+    // runSequence(, done)
+  })
+)
 
 // Build the thing in production mode (unless otherwise specified);
-gulp.task('build', ['info'], done => {
-  ENV = argv.development || argv.dev || argv.d ? 'development' : 'production'
-  runSequence(['styles', 'scripts'], ['imagemin', 'svgmin'], done)
-})
+gulp.task(
+  'build',
+  gulp.series('info', () => {
+    ENV = argv.development || argv.dev || argv.d ? 'development' : 'production'
+    gulp.series('styles', 'scripts', 'imagemin', 'svgmin', done => {
+      done()
+    })
+    // runSequence(['styles', 'scripts'], ['imagemin', 'svgmin'], done)
+  })
+)
