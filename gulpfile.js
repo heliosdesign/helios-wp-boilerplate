@@ -86,7 +86,7 @@ function bundle(entry, env) {
     paths: paths,
     debug: env !== 'production'
   })
-    .transform(babel, { presets: ['es2015'] })
+    .transform(babel, { presets: ['@babel/preset-env'] })
     .bundle()
     .on('error', e => plugins.util.log(plugins.util.colors.red('Error: ') + e.message))
     .pipe(source(entry))
@@ -359,11 +359,6 @@ gulp.task(
       plugins.livereload.reload()
       done()
     })
-    // })
-
-    // runSequence(['styles', 'scripts', 'imagemin', 'svgmin'], function() {
-
-    // })
     done()
   })
 )
