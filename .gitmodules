@@ -1,3 +1,0 @@
-[submodule "templates/plugin/inc/admin-classes"]
-	path = templates/plugin/inc/admin-classes
-	url = git@github.com:dansundy/wp-admin-classes.git
