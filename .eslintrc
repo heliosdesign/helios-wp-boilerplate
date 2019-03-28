@@ -1,7 +1,9 @@
 {
   "parser": "babel-eslint",
   "env": {
-    "amd": true
+    "browser": true,
+    "amd": true,
+    "node": true
   },
   "rules": {
     "no-alert": "off",
